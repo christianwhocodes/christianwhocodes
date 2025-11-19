@@ -14,9 +14,9 @@ dependencies = ["pyperclip>=1.11.0", "rich>=14.2.0"]
 christianwhocodes = "christianwhocodes:main"
 
 [project.urls]
-Homepage = "https://github.com/christianwhocodes/dev"
-Repository = "https://github.com/christianwhocodes/dev"
-Issues = "https://github.com/christianwhocodes/dev/issues"
+homepage = "https://github.com/christianwhocodes/dev"
+repository = "https://github.com/christianwhocodes/dev"
+issues = "https://github.com/christianwhocodes/dev/issues"
 
 [[tool.uv.index]]
 name = "testpypi"
