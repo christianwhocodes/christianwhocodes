@@ -106,13 +106,24 @@ jobs:
           ls -lh dist/
 
       - name: Publish to PyPI (stable)
-        if: (startsWith(github.ref, 'refs/tags/') || (startsWith(github.ref, 'refs/heads/') && steps.create_tag.outputs.TAG_CREATED == 'true')) && steps.check_version.outputs.TYPE == 'stable'
+        if: >-
+          (
+            startsWith(github.ref, 'refs/tags/') ||
+            (startsWith(github.ref, 'refs/heads/') && steps.create_tag.outputs.TAG_CREATED == 'true')
+          )
+          && steps.check_version.outputs.TYPE == 'stable'
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         run: uv publish
 
       - name: Publish to TestPyPI (pre-release)
-        if: (startsWith(github.ref, 'refs/tags/') || (startsWith(github.ref, 'refs/heads/') && steps.create_tag.outputs.TAG_CREATED == 'true')) && steps.check_version.outputs.TYPE != 'stable' && steps.check_version.outputs.TYPE != 'unknown'
+        if: >-
+          (
+            startsWith(github.ref, 'refs/tags/') ||
+            (startsWith(github.ref, 'refs/heads/') && steps.create_tag.outputs.TAG_CREATED == 'true')
+          )
+          && steps.check_version.outputs.TYPE != 'stable'
+          && steps.check_version.outputs.TYPE != 'unknown'
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
         run: uv publish --index testpypi
