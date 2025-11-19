@@ -4,7 +4,7 @@ requires-python = ">=3.12"
 
 [[package]]
 name = "christianwhocodes"
-version = "0.0.1"
+version = "0.0.1.post1"
 source = { editable = "." }
 dependencies = [
     { name = "pyperclip" },
