@@ -3,12 +3,12 @@ name: Build and Publish Package
 on:
   push:
     tags:
-      - "*.stable"
-      - "*a*"
-      - "*b*"
-      - "*rc*"
-      - "*.post*"
-      - "*.dev*"
+      - "[0-9].[0-9].[0-9].stable"
+      - "[0-9].[0-9].[0-9]a[0-9]"
+      - "[0-9].[0-9].[0-9]b[0-9]"
+      - "[0-9].[0-9].[0-9]rc[0-9]"
+      - "[0-9].[0-9].[0-9].post[0-9]"
+      - "[0-9].[0-9].[0-9].dev[0-9]"
 
 jobs:
   build-and-publish:
@@ -48,11 +48,13 @@ jobs:
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
 
-      - name: Publish to TestPyPI (pre-release)
+      - name: Publish to TestPyPI (pre-releases)
         if: |
           contains(github.ref, format('refs/tags/{0}a', steps.get_version.outputs.VERSION)) ||
           contains(github.ref, format('refs/tags/{0}b', steps.get_version.outputs.VERSION)) ||
-          contains(github.ref, format('refs/tags/{0}rc', steps.get_version.outputs.VERSION))
+          contains(github.ref, format('refs/tags/{0}rc', steps.get_version.outputs.VERSION)) ||
+          contains(github.ref, format('refs/tags/{0}.post', steps.get_version.outputs.VERSION)) ||
+          contains(github.ref, format('refs/tags/{0}.dev', steps.get_version.outputs.VERSION))
         run: uv publish --index testpypi
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
