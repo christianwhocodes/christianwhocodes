@@ -1,0 +1,58 @@
+name: Build and Publish Package
+
+on:
+  push:
+    tags:
+      - "*.stable"
+      - "*a*"
+      - "*b*"
+      - "*rc*"
+      - "*.post*"
+      - "*.dev*"
+
+jobs:
+  build-and-publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Get package version
+        id: get_version
+        run: |
+          VERSION=$(uv version --short)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Package version: $VERSION"
+
+      - name: Build package
+        run: uv build
+
+      - name: Check package contents
+        run: |
+          echo "Built packages:"
+          ls -lh dist/
+
+      - name: Publish to PyPI (stable)
+        if: contains(github.ref, format('refs/tags/{0}.stable', steps.get_version.outputs.VERSION))
+        run: uv publish
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Publish to TestPyPI (pre-release)
+        if: |
+          contains(github.ref, format('refs/tags/{0}a', steps.get_version.outputs.VERSION)) ||
+          contains(github.ref, format('refs/tags/{0}b', steps.get_version.outputs.VERSION)) ||
+          contains(github.ref, format('refs/tags/{0}rc', steps.get_version.outputs.VERSION))
+        run: uv publish --index testpypi
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
