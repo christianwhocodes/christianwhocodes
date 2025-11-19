@@ -1,6 +1,6 @@
 [project]
 name = "dev"
-version = "0.0.1.dev1"
+version = "0.0.1b1"
 description = "Tools for developers."
 readme = "README.md"
 license = { file = "LICENSE" }
