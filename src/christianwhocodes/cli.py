@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from sys import exit
-from typing import NoReturn, Type
+from typing import NoReturn
 
 from christianwhocodes.generators.file import (
     FileGenerator,
@@ -9,22 +9,13 @@ from christianwhocodes.generators.file import (
     PgServiceFileGenerator,
     SSHConfigFileGenerator,
 )
-from christianwhocodes.helpers.enums import ExitCode
-from christianwhocodes.helpers.stdout import print
-from christianwhocodes.helpers.utils import generate_random_string
-from christianwhocodes.helpers.version import Version
+from christianwhocodes.utils.enums import ExitCode
+from christianwhocodes.utils.helpers import generate_random_string
+from christianwhocodes.utils.stdout import print
+from christianwhocodes.utils.version import Version
 
 
 def create_parser() -> ArgumentParser:
-    """Create and configure the argument parser.
-
-    Sets up the CLI with subcommands:
-    - random: Generate random strings
-    - generate: Create configuration files (pgpass, pg_service, ssh_config)
-
-    Returns:
-        ArgumentParser: Configured argument parser with all subcommands.
-    """
     parser = ArgumentParser(
         prog="christianwhocodes",
         description="Christian Who Codes CLI Tool",
@@ -97,13 +88,13 @@ def main() -> NoReturn:
             generate_random_string(length=args.length, no_clipboard=args.no_clipboard)
 
         case "generate":
-            generators: dict[FileGeneratorOption, Type[FileGenerator]] = {
+            generators: dict[FileGeneratorOption, type[FileGenerator]] = {
                 FileGeneratorOption.PG_SERVICE: PgServiceFileGenerator,
                 FileGeneratorOption.PGPASS: PgPassFileGenerator,
                 FileGeneratorOption.SSH_CONFIG: SSHConfigFileGenerator,
             }
 
-            generator_class: Type[FileGenerator] = generators[args.file]
+            generator_class: type[FileGenerator] = generators[args.file]
             generator: FileGenerator = generator_class()
             generator.create(force=args.force)
 

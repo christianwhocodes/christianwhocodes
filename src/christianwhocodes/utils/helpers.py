@@ -4,7 +4,7 @@ from typing import Any, Iterable
 
 from pyperclip import copy
 
-from christianwhocodes.helpers.stdout import Text, print
+from .stdout import Text, print
 
 
 def generate_random_string(

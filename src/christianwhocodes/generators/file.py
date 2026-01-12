@@ -5,7 +5,7 @@ from pathlib import Path
 from platform import system
 from stat import S_IRUSR, S_IWUSR
 
-from christianwhocodes.helpers.stdout import Text, print
+from ..utils.stdout import Text, print
 
 
 class FileGenerator(ABC):

@@ -1,6 +1,7 @@
 from typing import Literal
 
-from christianwhocodes.helpers.enums import ExitCode
+from .enums import ExitCode
+from .stdout import print
 
 
 class Version:
@@ -44,13 +45,13 @@ def print_version(package: str) -> ExitCode:
         package: Name of the package to get version for.
 
     Returns:
-        ExitCode.SUCCESS (0) if version found, ExitCode.ERROR otherwise
+        ExitCode.SUCCESS (int 0) if version found, ExitCode.ERROR (int 1) otherwise
     """
-    _VERSION = Version.get(package)[0]
+    VERSION = Version.get(package)[0]
 
-    if _VERSION != Version.placeholder():
-        print(_VERSION)
+    if VERSION != Version.placeholder():
+        print(VERSION)
         return ExitCode.SUCCESS
     else:
-        print(f"{_VERSION}: Could not determine version for package '{package}'.")
+        print(f"{VERSION}: Could not determine version for package '{package}'.")
         return ExitCode.ERROR
