@@ -1,9 +1,5 @@
 from enum import IntEnum
 
-# ======================================================================
-# EXIT CODES
-# ======================================================================
-
 
 class ExitCode(IntEnum):
     """Standard exit codes IntEnums.
@@ -14,3 +10,6 @@ class ExitCode(IntEnum):
 
     SUCCESS = 0
     ERROR = 1
+
+
+__all__: list[str] = ["ExitCode"]

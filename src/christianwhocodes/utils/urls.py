@@ -32,3 +32,6 @@ def normalize_url_path(
         url = url.rstrip("/")
 
     return url
+
+
+__all__: list[str] = ["normalize_url_path"]

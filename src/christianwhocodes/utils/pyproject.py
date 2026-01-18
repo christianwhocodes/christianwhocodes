@@ -97,3 +97,6 @@ class PyProject:
     def path(self) -> Path:
         """Return the pyproject.toml file path."""
         return self._toml_path
+
+
+__all__: list[str] = ["PyProject"]

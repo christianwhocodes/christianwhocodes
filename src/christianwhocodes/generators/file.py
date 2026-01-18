@@ -196,3 +196,12 @@ class SSHConfigFileGenerator(FileGenerator):
             "    HostName my_domain_or_ip_address\n"
             "#    LocalForward 8080 localhost:8080\n"
         )
+
+
+__all__: list[str] = [
+    "FileGenerator",
+    "FileGeneratorOption",
+    "PgServiceFileGenerator",
+    "PgPassFileGenerator",
+    "SSHConfigFileGenerator",
+]

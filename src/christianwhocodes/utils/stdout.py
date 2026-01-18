@@ -24,7 +24,7 @@ class Text(StrEnum):
     HIGHLIGHT = "highlight"
 
 
-THEME = Theme(
+_THEME = Theme(
     {
         Text.ERROR: "bold red",
         Text.WARNING: "bold yellow",
@@ -35,7 +35,7 @@ THEME = Theme(
     }
 )
 
-console = Console(theme=THEME)
+_console = Console(theme=_THEME)
 
 
 def print(
@@ -67,14 +67,16 @@ def print(
                 output += f"[{segment_color}]{segment_text}[/{segment_color}]"
             else:
                 output += segment_text
-        console.print(output, end=end)
+        _console.print(output, end=end)
     else:
         # Single color mode
         if color:
-            console.print(f"[{color}]{text}[/{color}]", end=end)
+            _console.print(f"[{color}]{text}[/{color}]", end=end)
         else:
-            console.print(text, end=end)
+            _console.print(text, end=end)
 
+
+__all__: list[str] = ["Text", "print"]
 
 # Example usage
 if __name__ == "__main__":

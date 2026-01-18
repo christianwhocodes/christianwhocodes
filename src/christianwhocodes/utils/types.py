@@ -89,3 +89,6 @@ class TypeConverter:
             path = path.resolve()
 
         return path
+
+
+__all__: list[str] = ["TypeConverter"]

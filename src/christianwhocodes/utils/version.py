@@ -55,3 +55,6 @@ def print_version(package: str) -> ExitCode:
     else:
         print(f"{VERSION}: Could not determine version for package '{package}'.")
         return ExitCode.ERROR
+
+
+__all__: list[str] = ["Version", "print_version"]

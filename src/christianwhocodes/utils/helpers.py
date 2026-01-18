@@ -60,3 +60,6 @@ def max_length_from_choices(choices: Iterable[tuple[str, Any]]) -> int:
         int: The maximum length of the value field.
     """
     return max(len(choice[0]) for choice in choices)
+
+
+__all__: list[str] = ["generate_random_string", "max_length_from_choices"]

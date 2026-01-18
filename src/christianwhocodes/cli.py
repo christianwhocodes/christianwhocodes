@@ -9,10 +9,13 @@ from christianwhocodes.generators.file import (
     PgServiceFileGenerator,
     SSHConfigFileGenerator,
 )
-from christianwhocodes.utils.enums import ExitCode
-from christianwhocodes.utils.helpers import generate_random_string
-from christianwhocodes.utils.stdout import print
-from christianwhocodes.utils.version import Version
+from christianwhocodes.utils import (
+    ExitCode,
+    PlatformInfo,
+    Version,
+    generate_random_string,
+    print,
+)
 
 
 def create_parser() -> ArgumentParser:
@@ -29,6 +32,14 @@ def create_parser() -> ArgumentParser:
         action="version",
         version=Version.get("christianwhocodes")[0],
         help="Show program version",
+    )
+
+    # Add platform argument
+    parser.add_argument(
+        "-p",
+        "--platform",
+        action="store_true",
+        help="Show platform and architecture information",
     )
 
     # Create subparsers for different commands
@@ -82,26 +93,34 @@ def main() -> NoReturn:
     parser = create_parser()
     args = parser.parse_args()
 
-    # Handle commands using match case
-    match args.command:
-        case "random" | "generaterandom" | "randomstring":
-            generate_random_string(length=args.length, no_clipboard=args.no_clipboard)
+    # Handle platform flag
+    if args.platform:
+        platform_info = PlatformInfo()
+        print(f"[bold cyan]Platform:[/] {platform_info.os_name}")
+        print(f"[bold cyan]Architecture:[/] {platform_info.architecture}")
+        print(f"[bold cyan]Full:[/] {platform_info}")
+    else:
+        match args.command:
+            case "random" | "generaterandom" | "randomstring":
+                generate_random_string(
+                    length=args.length, no_clipboard=args.no_clipboard
+                )
 
-        case "generate":
-            generators: dict[FileGeneratorOption, type[FileGenerator]] = {
-                FileGeneratorOption.PG_SERVICE: PgServiceFileGenerator,
-                FileGeneratorOption.PGPASS: PgPassFileGenerator,
-                FileGeneratorOption.SSH_CONFIG: SSHConfigFileGenerator,
-            }
+            case "generate":
+                generators: dict[FileGeneratorOption, type[FileGenerator]] = {
+                    FileGeneratorOption.PG_SERVICE: PgServiceFileGenerator,
+                    FileGeneratorOption.PGPASS: PgPassFileGenerator,
+                    FileGeneratorOption.SSH_CONFIG: SSHConfigFileGenerator,
+                }
 
-            generator_class: type[FileGenerator] = generators[args.file]
-            generator: FileGenerator = generator_class()
-            generator.create(force=args.force)
+                generator_class: type[FileGenerator] = generators[args.file]
+                generator: FileGenerator = generator_class()
+                generator.create(force=args.force)
 
-        case _:
-            print(
-                "...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32"
-            )
+            case _:
+                print(
+                    "...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32"
+                )
 
     exit(ExitCode.SUCCESS)
 
