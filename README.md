@@ -1,3 +1,3 @@
 # christianwhocodes
 
-Python code utilities for developers.
+Python utilities for developers.
