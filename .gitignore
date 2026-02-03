@@ -8,4 +8,4 @@ __pycache__/
 /.ruff_cache/
 
 # Temporary files
-/.tmp/
+/src/tmp/
