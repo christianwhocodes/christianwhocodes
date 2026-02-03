@@ -1,11 +1,17 @@
-# Byte-compiled / optimized / DLL files
+# Python-generated files
 __pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
 
-# Virtual environment
+# Virtual environments
 /.venv/
 
 # Ruff cache
 /.ruff_cache/
 
 # Temporary files
+/.tmp/
 /src/tmp/

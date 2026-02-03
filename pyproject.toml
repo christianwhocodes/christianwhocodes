@@ -3,9 +3,9 @@ requires = ["uv_build>=0.9.29,<0.10.0"]
 build-backend = "uv_build"
 
 [project.urls]
-homepage = "https://github.com/christianwhocodes/pkg-christianwhocodes#readme"
-repository = "https://github.com/christianwhocodes/pkg-christianwhocodes"
-issues = "https://github.com/christianwhocodes/pkg-christianwhocodes/issues"
+homepage = "https://github.com/christianwhocodes/christianwhocodes#readme"
+repository = "https://github.com/christianwhocodes/christianwhocodes"
+issues = "https://github.com/christianwhocodes/christianwhocodes/issues"
 
 [project.scripts]
 christianwhocodes = "christianwhocodes.cli:main"
