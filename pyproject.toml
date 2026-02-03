@@ -1,5 +1,5 @@
 [build-system]
-requires = ["uv_build>=0.9.28,<0.10.0"]
+requires = ["uv_build>=0.9.29,<0.10.0"]
 build-backend = "uv_build"
 
 [project.urls]
@@ -21,7 +21,7 @@ authors = [
     { name = "Kevin Wasike Wakhisi", email = "kevin@christianwhocodes.space" },
 ]
 requires-python = ">=3.12"
-dependencies = ["pyperclip>=1.11.0", "rich>=14.3.1"]
+dependencies = ["pyperclip>=1.11.0", "rich>=14.3.2"]
 
 [[tool.uv.index]]
 name = "testpypi"
