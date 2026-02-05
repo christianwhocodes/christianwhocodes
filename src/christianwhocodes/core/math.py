@@ -1,6 +1,7 @@
 """Mathematical utility functions for common calculations."""
 
 import math
+from functools import lru_cache
 from typing import Generator
 
 
@@ -16,6 +17,9 @@ def is_prime(n: int) -> bool:
     Returns:
         True if the number is prime, False otherwise.
 
+    Raises:
+        ValueError: If n is negative.
+
     Example:
         >>> is_prime(7)
         True
@@ -26,6 +30,8 @@ def is_prime(n: int) -> bool:
         >>> is_prime(1)
         False
     """
+    if n < 0:
+        raise ValueError("n must be non-negative")
     if n < 2:
         return False
     if n == 2:
@@ -40,61 +46,45 @@ def is_prime(n: int) -> bool:
     return True
 
 
-def factorial(n: int) -> int:
-    """Calculate the factorial of a non-negative integer.
-
-    The factorial of n (denoted n!) is the product of all positive integers
-    less than or equal to n. By convention, 0! = 1.
-
-    Args:
-        n: Non-negative integer.
-
-    Returns:
-        The factorial of n.
-
-    Raises:
-        ValueError: If n is negative.
-
-    Example:
-        >>> factorial(5)
-        120
-        >>> factorial(0)
-        1
-        >>> factorial(10)
-        3628800
-    """
-    if n < 0:
-        raise ValueError("n must be non-negative")
-    return math.factorial(n)
-
-
-def is_factorial(n: int) -> bool:
+def is_factorial(n: int) -> tuple[bool, int | None]:
     """Check if a number is a factorial of some integer.
 
     A factorial number is the product of all positive integers less than or
     equal to a given positive integer. For example, 120 is a factorial (5!)
     because 5! = 5 x 4 x 3 x 2 x 1 = 120.
 
+    Note: The number 1 is both 0! and 1!, so this function returns the smaller
+    value (0) for consistency. In general, a positive integer can be the factorial
+    of at most one non-negative integer (except for 1, which is both 0! and 1!).
+
     Args:
         n: The number to check.
 
     Returns:
-        True if the number is a factorial, False otherwise.
+        A tuple (is_fact, k) where is_fact is True if n is a factorial,
+        and k is the integer whose factorial equals n (or None if not a factorial).
+
+    Raises:
+        ValueError: If n is negative.
 
     Example:
         >>> is_factorial(120)
-        True
+        (True, 5)
         >>> is_factorial(24)
-        True
+        (True, 4)
         >>> is_factorial(100)
-        False
+        (False, None)
         >>> is_factorial(1)
-        True
+        (True, 0)
+        >>> is_factorial(6)
+        (True, 3)
     """
-    if n < 1:
-        return False
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    if n == 0:
+        return (False, None)
     if n == 1:
-        return True
+        return (True, 0)  # Return 0 since 0! = 1 (and also 1! = 1)
 
     i = 2
     factorial = 1
@@ -102,7 +92,9 @@ def is_factorial(n: int) -> bool:
         factorial *= i
         i += 1
 
-    return factorial == n
+    if factorial == n:
+        return (True, i - 1)
+    return (False, None)
 
 
 def gcd(a: int, b: int) -> int:
@@ -151,11 +143,14 @@ def lcm(a: int, b: int) -> int:
     return math.lcm(a, b)
 
 
+@lru_cache(maxsize=None)
 def fibonacci(n: int) -> int:
     """Calculate the nth Fibonacci number.
 
     The Fibonacci sequence is defined as:
     F(0) = 0, F(1) = 1, F(n) = F(n-1) + F(n-2) for n > 1
+
+    This function uses memoization for improved performance on repeated calls.
 
     Args:
         n: The position in the Fibonacci sequence (0-indexed).
@@ -196,10 +191,19 @@ def fibonacci_sequence(n: int) -> Generator[int, None, None]:
     Yields:
         Fibonacci numbers in sequence.
 
+    Raises:
+        ValueError: If n is negative.
+
     Example:
         >>> list(fibonacci_sequence(7))
         [0, 1, 1, 2, 3, 5, 8]
+        >>> list(fibonacci_sequence(0))
+        []
+        >>> list(fibonacci_sequence(3))
+        [0, 1, 1]
     """
+    if n < 0:
+        raise ValueError("n must be non-negative")
     if n <= 0:
         return
 
@@ -225,6 +229,9 @@ def is_perfect_square(n: int) -> bool:
     Returns:
         True if the number is a perfect square, False otherwise.
 
+    Raises:
+        ValueError: If n is negative.
+
     Example:
         >>> is_perfect_square(16)
         True
@@ -234,7 +241,7 @@ def is_perfect_square(n: int) -> bool:
         True
     """
     if n < 0:
-        return False
+        raise ValueError("n must be non-negative")
     root = int(math.sqrt(n))
     return root * root == n
 
@@ -284,6 +291,9 @@ def is_power_of_two(n: int) -> bool:
     Returns:
         True if the number is a power of two, False otherwise.
 
+    Raises:
+        ValueError: If n is negative.
+
     Example:
         >>> is_power_of_two(8)
         True
@@ -292,6 +302,8 @@ def is_power_of_two(n: int) -> bool:
         >>> is_power_of_two(1)
         True
     """
+    if n < 0:
+        raise ValueError("n must be non-negative")
     return n > 0 and (n & (n - 1)) == 0
 
 
@@ -303,7 +315,6 @@ __all__: list[str] = [
     "fibonacci",
     "fibonacci_sequence",
     "is_perfect_square",
-    "factorial",
     "is_even",
     "is_odd",
     "is_power_of_two",
