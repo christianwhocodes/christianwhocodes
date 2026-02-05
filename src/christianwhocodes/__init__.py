@@ -15,7 +15,7 @@ The package is organized into semantic modules:
 # Re-export commonly used items for convenience
 from .core import (
     ExitCode,
-    PlatformInfo,
+    Platform,
     PyProject,
     TypeConverter,
     Version,
@@ -36,7 +36,7 @@ from .io import Text, copy_path, print
 __all__ = [
     # Core utilities
     "ExitCode",
-    "PlatformInfo",
+    "Platform",
     "PyProject",
     "TypeConverter",
     "Version",

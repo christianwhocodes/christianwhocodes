@@ -3,7 +3,7 @@
 from platform import machine, system
 
 
-class PlatformInfo:
+class Platform:
     """Encapsulates platform and architecture information.
 
     Detects the operating system and CPU architecture, normalizing them
@@ -79,4 +79,4 @@ class PlatformInfo:
         return f"{self.os_name}-{self.architecture}"
 
 
-__all__: list[str] = ["PlatformInfo"]
+__all__: list[str] = ["Platform"]

@@ -17,7 +17,7 @@ from christianwhocodes.commands import (
 )
 from christianwhocodes.core import ExitCode, Version
 from christianwhocodes.generators import FileGeneratorOption
-from christianwhocodes.io import print
+from christianwhocodes.io import Text, print
 
 # ============================================================================
 # ARGUMENT PARSER CONFIGURATION
@@ -116,7 +116,7 @@ def create_parser() -> ArgumentParser:
     parser = ArgumentParser(
         prog="christianwhocodes",
         description="Christian Who Codes CLI Tool - Utilities for developers",
-        epilog="...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32",
+        epilog="...but the people who know their God shall be strong, and carry out great exploits. — Daniel 11:32",
     )
 
     # Global arguments
@@ -217,11 +217,11 @@ def main() -> NoReturn:
         exit_code = dispatch_command(args)
     except KeyboardInterrupt:
         # Handle Ctrl+C gracefully
-        print("\n[yellow]Operation cancelled by user.[/]")
+        print("\nOperation cancelled by user.", Text.WARNING)
         exit_code = ExitCode.ERROR
     except Exception as e:
         # Catch unexpected errors and provide debugging information
-        print(f"[red][bold]Error:[/bold] {e}[/]")
+        print(f"Error: {e}", Text.ERROR)
         exit_code = ExitCode.ERROR
 
     exit(exit_code)

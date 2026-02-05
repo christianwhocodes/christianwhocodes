@@ -2,7 +2,7 @@
 
 from pathlib import Path
 from tomllib import load
-from typing import Any
+from typing import Any, Optional
 
 
 class PyProject:
@@ -69,7 +69,7 @@ class PyProject:
         return self._data["project"]["version"]
 
     @property
-    def description(self) -> str | None:
+    def description(self) -> Optional[str]:
         """Return the project description, if any."""
         return self._data["project"].get("description")
 
@@ -84,7 +84,7 @@ class PyProject:
         return self._data["project"].get("dependencies", [])
 
     @property
-    def python_requires(self) -> str | None:
+    def python_requires(self) -> Optional[str]:
         """Return the required Python version."""
         return self._data["project"].get("requires-python")
 

@@ -1,6 +1,7 @@
 """Console output utilities for rich-formatted text."""
 
 from enum import StrEnum
+from typing import Optional
 
 from rich.console import Console
 from rich.theme import Theme
@@ -42,8 +43,8 @@ _console = Console(theme=_THEME)
 
 
 def print(
-    text: str | list[tuple[str, str | None]],
-    color: str | None = None,
+    text: str | list[tuple[str, Optional[str]]],
+    color: Optional[str] = None,
     end: str = "\n",
 ) -> None:
     """Print colored text to the console using rich formatting.
