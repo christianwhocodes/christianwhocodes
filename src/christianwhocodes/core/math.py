@@ -73,9 +73,8 @@ def is_factorial(n: int) -> bool:
     while factorial < n:
         factorial *= i
         i += 1
-        if factorial == n:
-            return True
-    return False
+    
+    return factorial == n
 
 
 def gcd(a: int, b: int) -> int:
