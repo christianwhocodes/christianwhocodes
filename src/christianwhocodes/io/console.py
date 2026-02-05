@@ -1,3 +1,5 @@
+"""Console output utilities for rich-formatted text."""
+
 from enum import StrEnum
 
 from rich.console import Console
@@ -5,7 +7,7 @@ from rich.theme import Theme
 
 
 class Text(StrEnum):
-    """Rich color codes for use in styled output.
+    """Semantic color codes for styled console output.
 
     Attributes:
         ERROR: Bold red styling for error messages.
@@ -24,6 +26,7 @@ class Text(StrEnum):
     HIGHLIGHT = "highlight"
 
 
+# Configure rich console with custom theme
 _THEME = Theme(
     {
         Text.ERROR: "bold red",
@@ -43,21 +46,29 @@ def print(
     color: str | None = None,
     end: str = "\n",
 ) -> None:
-    """
-    Print colored text using rich.
+    """Print colored text to the console using rich formatting.
+
+    Supports both single-color and multi-color output modes for flexible
+    message formatting.
 
     Args:
-        text: The text to print. Can be:
+        text: The text to print. Can be either:
             - A string (used with the color parameter)
             - A list of (text, color) tuples for multi-colored output
-        color: The color/style to apply (from Theme class or rich color string)
-               Only used when text is a string
-        end: String appended after the text (default: newline)
+        color: The color/style to apply (from Text enum or rich color string).
+               Only used when text is a string.
+        end: String appended after the text (default: newline).
 
     Examples:
-        print("Error!", Theme.ERROR)
-        print("Status: ", Theme.INFO, end="")
-        print([("Error: ", Theme.ERROR), ("File not found", Theme.WARNING)])
+        # Single color
+        print("Error occurred!", Text.ERROR)
+        print("Status: ", Text.INFO, end="")
+
+        # Multi-colored text in one line
+        print([
+            ("Error: ", Text.ERROR),
+            ("File not found", Text.WARNING)
+        ])
     """
     if isinstance(text, list):
         # Multi-colored mode: text is a list of (text, color) tuples
@@ -77,37 +88,3 @@ def print(
 
 
 __all__: list[str] = ["Text", "print"]
-
-# Example usage
-if __name__ == "__main__":
-    # Single color examples
-    print("This is an error message", Text.ERROR)
-    print("This is a warning message", Text.WARNING)
-    print("This is a success message", Text.SUCCESS)
-    print("This is an info message", Text.INFO)
-    print("This is a normal message")
-
-    # Using end argument
-    print("Loading", Text.INFO, end="")
-    print("...", end="")
-    print(" Done!", Text.SUCCESS)
-
-    # Multi-colored text in one line
-    print(
-        [
-            ("Error: ", Text.ERROR),
-            ("File ", None),
-            ("config.json", Text.HIGHLIGHT),
-            (" not found", Text.WARNING),
-        ]
-    )
-
-    print(
-        [
-            ("Status: ", Text.INFO),
-            ("OK", Text.SUCCESS),
-            (" | Processed: ", None),
-            ("42", Text.HIGHLIGHT),
-            (" items", None),
-        ]
-    )

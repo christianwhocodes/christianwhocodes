@@ -1,10 +1,12 @@
+"""String generation and manipulation utilities."""
+
 import secrets
 import string
 from typing import Any, Iterable
 
 from pyperclip import copy
 
-from .stdout import Text, print
+from ..io.console import Text, print
 
 
 def generate_random_string(
@@ -12,7 +14,10 @@ def generate_random_string(
     no_clipboard: bool = False,
     charset: str = string.ascii_letters + string.digits,
 ) -> str:
-    """Generate a cryptographically secure random string and copy it to clipboard.
+    """Generate a cryptographically secure random string.
+
+    Creates a random string using the secrets module for cryptographic strength
+    and optionally copies it to the clipboard.
 
     Args:
         length: Length of the random string (default: 32).
@@ -20,7 +25,7 @@ def generate_random_string(
         charset: Character set to use (default: alphanumeric).
 
     Returns:
-        str: The generated random string.
+        The generated random string.
 
     Example:
         >>> random_str = generate_random_string(16)
@@ -29,7 +34,6 @@ def generate_random_string(
         >>> random_str = generate_random_string(16, no_clipboard=True)
         Generated: nO5pQr8sT1uVw4xY
     """
-
     random_str = "".join(secrets.choice(charset) for _ in range(length))
 
     print(
@@ -51,13 +55,20 @@ def generate_random_string(
 
 
 def max_length_from_choices(choices: Iterable[tuple[str, Any]]) -> int:
-    """Return the maximum string length among a list of `(value, display)` pairs.
+    """Return the maximum string length from a list of choice pairs.
+
+    Useful for formatting aligned choice lists in CLI menus.
 
     Args:
         choices: Iterable of (value, display) tuples.
 
     Returns:
-        int: The maximum length of the value field.
+        The maximum length of the value field.
+
+    Example:
+        >>> choices = [("short", "Short option"), ("very_long_option", "Long")]
+        >>> max_length_from_choices(choices)
+        16
     """
     return max(len(choice[0]) for choice in choices)
 

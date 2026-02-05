@@ -1,17 +1,25 @@
+"""Type conversion utilities for common data transformations."""
+
 import os
 from pathlib import Path
 from typing import Any, Callable, cast
 
 
 class TypeConverter:
-    """Utility class for converting basic data types."""
+    """Utility class for converting between common data types."""
 
     @staticmethod
     def to_bool(value: str | bool) -> bool:
         """Convert a string or boolean to a boolean.
 
-        Truthy strings:
-            'true', '1', 'yes', 'on'
+        Args:
+            value: String or boolean to convert.
+
+        Returns:
+            True if value is truthy, False otherwise.
+
+        Note:
+            Truthy strings: 'true', '1', 'yes', 'on' (case-insensitive).
         """
         if isinstance(value, bool):
             return value
@@ -21,14 +29,20 @@ class TypeConverter:
     def to_list_of_str(
         value: Any, transform: Callable[[str], str] | None = None
     ) -> list[str]:
-        """Convert a string or list into a list of strings.
+        """Convert a value into a list of strings.
 
         Args:
-            value: List or comma-separated string.
-            transform: Optional string transformer (e.g. str.lower).
+            value: List or comma-separated string to convert.
+            transform: Optional function to transform each string (e.g., str.lower).
 
         Returns:
-            list[str]: Cleaned list of strings.
+            List of strings.
+
+        Example:
+            >>> TypeConverter.to_list_of_str("a, b, c")
+            ['a', 'b', 'c']
+            >>> TypeConverter.to_list_of_str("A,B,C", str.lower)
+            ['a', 'b', 'c']
         """
         result: list[str] = []
 
@@ -48,7 +62,7 @@ class TypeConverter:
     def to_path(value: str | Path, resolve: bool = True) -> Path:
         """Convert a string or Path to a properly expanded and resolved Path.
 
-        This method intelligently handles:
+        Handles:
         - User home directory expansion (~)
         - Environment variable expansion ($VAR, ${VAR})
         - Absolute path resolution
@@ -59,7 +73,7 @@ class TypeConverter:
             resolve: If True, resolve to absolute path (default: True).
 
         Returns:
-            Path: Processed Path object.
+            Processed Path object.
 
         Examples:
             >>> TypeConverter.to_path("~/documents/file.txt")

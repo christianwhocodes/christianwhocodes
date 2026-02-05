@@ -1,28 +1,22 @@
-"""Utility module for copying files and directories.
-
-This module provides classes and functions to copy files and directories
-recursively with appropriate error handling and user prompts.
-It replaces the Django management command implementation with a pure Python
-implementation using the project's styling utilities.
-"""
+"""Filesystem operations for copying files and directories."""
 
 from abc import ABC, abstractmethod
 from pathlib import Path
 from shutil import copy2, copytree, rmtree
 from typing import Union
 
-from .stdout import Text, print
-from .types import TypeConverter
+from ..core.converters import TypeConverter
+from .console import Text, print
 
-# Type for path-like objects (str or Path)
+# Type alias for path-like objects
 PathLike = Union[str, Path]
 
 
 class Copier(ABC):
-    """Base class for copy operations.
+    """Abstract base class for copy operations.
 
-    This abstract class defines the interface for copying files or directories.
-    Subclasses must implement the copy method for specific copy strategies.
+    Defines the interface for copying files or directories with consistent
+    error handling and validation.
     """
 
     @abstractmethod
@@ -60,8 +54,9 @@ class FileCopier(Copier):
     necessary parent directories at the destination.
 
     Example:
-        copier = FileCopier()
-        copier.copy(Path("source.txt"), Path("dest/source.txt"))
+        >>> copier = FileCopier()
+        >>> copier.copy(Path("source.txt"), Path("dest/source.txt"))
+        True
     """
 
     def copy(self, source: Path, destination: Path) -> bool:
@@ -112,11 +107,12 @@ class DirectoryCopier(Copier):
 
     Recursively copies entire directory structures while preserving the
     directory hierarchy. Prompts for confirmation if the destination already
-    exists, allowing the user to abort or proceed with overwriting.
+    exists.
 
     Example:
-        copier = DirectoryCopier()
-        copier.copy(Path("source_dir/"), Path("dest_dir/"))
+        >>> copier = DirectoryCopier()
+        >>> copier.copy(Path("source_dir/"), Path("dest_dir/"))
+        True
     """
 
     def copy(self, source: Path, destination: Path) -> bool:
@@ -124,7 +120,7 @@ class DirectoryCopier(Copier):
 
         Recursively copies the source directory to the destination. If the
         destination already exists, prompts the user for confirmation before
-        proceeding. Uses shutil.copytree for recursive copying.
+        proceeding.
 
         Args:
             source: Path to the source directory.
@@ -182,7 +178,7 @@ class DirectoryCopier(Copier):
 
 
 def copy_path(source: PathLike, destination: PathLike) -> bool:
-    """Copy files or folders with their contents from one location to another.
+    """Copy files or directories from one location to another.
 
     Automatically detects whether the source is a file or directory
     and uses the appropriate copier.
@@ -192,7 +188,13 @@ def copy_path(source: PathLike, destination: PathLike) -> bool:
         destination: The destination file or directory path.
 
     Returns:
-        bool: True if successful, False otherwise.
+        True if successful, False otherwise.
+
+    Example:
+        >>> copy_path("./file.txt", "./backup/file.txt")
+        True
+        >>> copy_path("./src/", "./backup/src/")
+        True
     """
     source_path = TypeConverter.to_path(source)
     dest_path = TypeConverter.to_path(destination)

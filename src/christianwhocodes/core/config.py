@@ -1,14 +1,19 @@
+"""Configuration file parsing utilities."""
+
 from pathlib import Path
 from tomllib import load
 from typing import Any
 
 
 class PyProject:
-    """Represents the whole data of a pyproject.toml file.
+    """Represents the data from a pyproject.toml file.
+
+    Provides convenient property-based access to common project metadata
+    while allowing raw access to the full TOML data structure.
 
     Attributes:
-        path (Path): The path to the pyproject.toml file.
-        data (dict[str, Any]): Parsed data from the `[project]` section.
+        path: The path to the pyproject.toml file.
+        data: The complete parsed TOML data.
 
     Example:
         >>> py = PyProject(Path("pyproject.toml"))
@@ -16,13 +21,12 @@ class PyProject:
         'my-package'
         >>> py.version
         '1.0.0'
-        >>> urls = py.data.get("project", {}).get("urls", {})
-        >>> urls.repository
-        'https://github.com/org/repo'
+        >>> py.dependencies
+        ['requests>=2.28.0', 'rich>=13.0.0']
     """
 
     def __init__(self, toml_path: Path) -> None:
-        """Load and parse the pyproject file.
+        """Load and parse the pyproject.toml file.
 
         Args:
             toml_path: Path to the pyproject.toml file.
@@ -30,7 +34,7 @@ class PyProject:
         Raises:
             FileNotFoundError: If the file does not exist.
             tomllib.TOMLDecodeError: If the file is invalid TOML.
-            KeyError: If the `[project]` section is missing.
+            KeyError: If the [project] section is missing.
         """
         self._toml_path = toml_path
 
@@ -39,19 +43,19 @@ class PyProject:
 
         if "project" not in full_data:
             raise KeyError(f"[project] section not found in {toml_path}")
-        else:
-            self._data: dict[str, Any] = full_data
 
-    # ----------------------------
-    # Metadata Properties
-    # ----------------------------
+        self._data: dict[str, Any] = full_data
+
+    # ============================================================================
+    # Project Metadata Properties
+    # ============================================================================
 
     @property
     def name(self) -> str:
         """Return the project name.
 
         Raises:
-            KeyError: If missing.
+            KeyError: If the name field is missing.
         """
         return self._data["project"]["name"]
 
@@ -60,7 +64,7 @@ class PyProject:
         """Return the project version.
 
         Raises:
-            KeyError: If missing.
+            KeyError: If the version field is missing.
         """
         return self._data["project"]["version"]
 
@@ -84,18 +88,18 @@ class PyProject:
         """Return the required Python version."""
         return self._data["project"].get("requires-python")
 
-    # ----------------------------
+    # ============================================================================
     # General Accessors
-    # ----------------------------
+    # ============================================================================
 
     @property
     def data(self) -> dict[str, Any]:
-        """Return raw metadata."""
+        """Return the raw parsed TOML data."""
         return self._data
 
     @property
     def path(self) -> Path:
-        """Return the pyproject.toml file path."""
+        """Return the path to the pyproject.toml file."""
         return self._toml_path
 
 

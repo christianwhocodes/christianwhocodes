@@ -1,72 +1,65 @@
-from argparse import ArgumentParser
-from sys import exit
-from typing import NoReturn
+"""Christian Who Codes CLI - Command-line interface entry point.
 
-from christianwhocodes.generators.file import (
-    FileGenerator,
-    FileGeneratorOption,
-    PgPassFileGenerator,
-    PgServiceFileGenerator,
-    SSHConfigFileGenerator,
+This module provides the main entry point for the CLI tool, including
+argument parser configuration and command routing. Command implementations
+are organized in the commands/ package for maintainability.
+"""
+
+from argparse import ArgumentParser, Namespace
+from sys import argv, exit
+from typing import Any, Callable, NoReturn
+
+from christianwhocodes.commands import (
+    handle_copy_operation,
+    handle_file_generation,
+    handle_platform_info,
+    handle_random_string,
 )
-from christianwhocodes.utils import (
-    ExitCode,
-    PlatformInfo,
-    Version,
-    copy_path,
-    generate_random_string,
-    print,
-)
+from christianwhocodes.core import ExitCode, Version
+from christianwhocodes.generators import FileGeneratorOption
+from christianwhocodes.io import print
+
+# ============================================================================
+# ARGUMENT PARSER CONFIGURATION
+# ============================================================================
 
 
-def create_parser() -> ArgumentParser:
-    parser = ArgumentParser(
-        prog="christianwhocodes",
-        description="Christian Who Codes CLI Tool",
-        epilog="...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32",
-    )
+def configure_random_parser(subparsers: Any) -> None:
+    """Configure the random string generation subcommand.
 
-    # Add version argument
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version=Version.get("christianwhocodes")[0],
-        help="Show program version",
-    )
-
-    # Add platform argument
-    parser.add_argument(
-        "-p",
-        "--platform",
-        action="store_true",
-        help="Show platform and architecture information",
-    )
-
-    # Create subparsers for different commands
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
-
-    # Random string generator subcommand
+    Args:
+        subparsers: The subparsers action object to add the random parser to.
+    """
     random_parser = subparsers.add_parser(
         "random",
         aliases=["generaterandom", "randomstring"],
-        help="Generate a random string",
+        help="Generate a cryptographically secure random string",
     )
     random_parser.add_argument(
-        "--no-clipboard", action="store_true", help="Don't copy the result to clipboard"
+        "--no-clipboard",
+        action="store_true",
+        help="Don't copy the generated string to clipboard",
     )
     random_parser.add_argument(
         "-l",
         "--length",
         type=int,
         default=16,
+        metavar="N",
         help="Length of the random string (default: 16)",
     )
 
-    # File generator subcommand
+
+def configure_generate_parser(subparsers: Any) -> None:
+    """Configure the file generation subcommand.
+
+    Args:
+        subparsers: The subparsers action object to add the generate parser to.
+    """
+    file_types = ", ".join(opt.value for opt in FileGeneratorOption)
     generate_parser = subparsers.add_parser(
         "generate",
-        help=f"Generate configuration files ({', '.join(o.value for o in FileGeneratorOption)})",
+        help=f"Generate configuration files ({file_types})",
     )
     generate_parser.add_argument(
         "-f",
@@ -74,18 +67,25 @@ def create_parser() -> ArgumentParser:
         choices=[opt.value for opt in FileGeneratorOption],
         required=True,
         type=FileGeneratorOption,
-        help=f"Which file to generate (options: {', '.join(o.value for o in FileGeneratorOption)}).",
+        metavar="TYPE",
+        help=f"File type to generate. Options: {file_types}",
     )
     generate_parser.add_argument(
         "--force",
         action="store_true",
-        help="Force overwrite without confirmation",
+        help="Force overwrite existing files without confirmation",
     )
 
-    # Copy subcommand
+
+def configure_copy_parser(subparsers: Any) -> None:
+    """Configure the copy operation subcommand.
+
+    Args:
+        subparsers: The subparsers action object to add the copy parser to.
+    """
     copy_parser = subparsers.add_parser(
         "copy",
-        help="Copy files or folders from one location to another",
+        help="Copy files or directories from source to destination",
     )
     copy_parser.add_argument(
         "-i",
@@ -93,7 +93,8 @@ def create_parser() -> ArgumentParser:
         "--source",
         dest="source",
         required=True,
-        help="Source file or folder path to copy from",
+        metavar="PATH",
+        help="Source file or directory path",
     )
     copy_parser.add_argument(
         "-o",
@@ -101,54 +102,129 @@ def create_parser() -> ArgumentParser:
         "--destination",
         dest="destination",
         required=True,
-        help="Destination file or folder path to copy to",
+        metavar="PATH",
+        help="Destination file or directory path",
     )
+
+
+def create_parser() -> ArgumentParser:
+    """Create and configure the argument parser with all subcommands.
+
+    Returns:
+        Configured argument parser ready to parse arguments.
+    """
+    parser = ArgumentParser(
+        prog="christianwhocodes",
+        description="Christian Who Codes CLI Tool - Utilities for developers",
+        epilog="...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32",
+    )
+
+    # Global arguments
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=Version.get("christianwhocodes")[0],
+        help="Show program version and exit",
+    )
+
+    parser.add_argument(
+        "-p",
+        "--platform",
+        action="store_true",
+        help="Display platform and architecture information",
+    )
+
+    # Create subparsers for commands
+    subparsers = parser.add_subparsers(
+        dest="command",
+        help="Available commands (use <command> -h for command-specific help)",
+    )
+
+    # Configure each subcommand
+    configure_random_parser(subparsers)
+    configure_generate_parser(subparsers)
+    configure_copy_parser(subparsers)
 
     return parser
 
 
-def main() -> NoReturn:
-    """Main entry point for the CLI.
+# ============================================================================
+# COMMAND ROUTING AND EXECUTION
+# ============================================================================
 
-    Parses command-line arguments and dispatches to appropriate handlers.
-    Exits with appropriate exit code after execution.
+# Command registry maps command names to their handler functions
+COMMAND_HANDLERS: dict[str, Callable[[Namespace], ExitCode]] = {
+    "random": handle_random_string,
+    "generaterandom": handle_random_string,
+    "randomstring": handle_random_string,
+    "generate": handle_file_generation,
+    "copy": handle_copy_operation,
+}
+
+
+def handle_default(args: Namespace) -> ExitCode:
+    """Display default message when no command is specified.
+
+    Args:
+        args: Parsed command-line arguments (unused).
+
+    Returns:
+        ExitCode.SUCCESS after displaying the message.
+    """
+    print(
+        "...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32"
+    )
+    return ExitCode.SUCCESS
+
+
+def dispatch_command(args: Namespace) -> ExitCode:
+    """Route the command to its appropriate handler function.
+
+    Args:
+        args: Parsed command-line arguments containing the command name.
+
+    Returns:
+        ExitCode from the command handler, or default handler if no command.
+    """
+    # Handle platform flag (takes precedence over subcommands)
+    if args.platform:
+        return handle_platform_info(args)
+
+    # Dispatch to registered command handler or default
+    command = args.command
+    handler = COMMAND_HANDLERS.get(command, handle_default)
+    return handler(args)
+
+
+# ============================================================================
+# MAIN ENTRY POINT
+# ============================================================================
+
+
+def main() -> NoReturn:
+    """Main entry point for the CLI application.
+
+    Parses command-line arguments, dispatches to the appropriate handler,
+    and exits with the returned exit code.
+
+    This function never returns normally; it always calls sys.exit().
     """
     parser = create_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv[1:])
 
-    # Handle platform flag
-    if args.platform:
-        platform_info = PlatformInfo()
-        print(f"[bold cyan]Platform:[/] {platform_info.os_name}")
-        print(f"[bold cyan]Architecture:[/] {platform_info.architecture}")
-        print(f"[bold cyan]Full:[/] {platform_info}")
-    else:
-        match args.command:
-            case "random" | "generaterandom" | "randomstring":
-                generate_random_string(
-                    length=args.length, no_clipboard=args.no_clipboard
-                )
+    try:
+        exit_code = dispatch_command(args)
+    except KeyboardInterrupt:
+        # Handle Ctrl+C gracefully
+        print("\n[yellow]Operation cancelled by user.[/]")
+        exit_code = ExitCode.ERROR
+    except Exception as e:
+        # Catch unexpected errors and provide debugging information
+        print(f"[red][bold]Error:[/bold] {e}[/]")
+        exit_code = ExitCode.ERROR
 
-            case "generate":
-                generators: dict[FileGeneratorOption, type[FileGenerator]] = {
-                    FileGeneratorOption.PG_SERVICE: PgServiceFileGenerator,
-                    FileGeneratorOption.PGPASS: PgPassFileGenerator,
-                    FileGeneratorOption.SSH_CONFIG: SSHConfigFileGenerator,
-                }
-
-                generator_class: type[FileGenerator] = generators[args.file]
-                generator: FileGenerator = generator_class()
-                generator.create(force=args.force)
-
-            case "copy":
-                copy_path(args.source, args.destination)
-
-            case _:
-                print(
-                    "...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32"
-                )
-
-    exit(ExitCode.SUCCESS)
+    exit(exit_code)
 
 
 if __name__ == "__main__":

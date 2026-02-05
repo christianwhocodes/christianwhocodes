@@ -1,16 +1,24 @@
+"""URL manipulation and normalization utilities."""
+
+
 def normalize_url_path(
     url: str, leading_slash: bool = False, trailing_slash: bool = True
 ) -> str:
-    """
-    Normalize URL format by ensuring consistent slash usage.
+    """Normalize URL format by ensuring consistent slash usage.
 
     Args:
-        url: The URL string to normalize
-        leading_slash: Whether the URL should start with a slash
-        trailing_slash: Whether the URL should end with a slash
+        url: The URL string to normalize.
+        leading_slash: Whether the URL should start with a slash (default: False).
+        trailing_slash: Whether the URL should end with a slash (default: True).
 
     Returns:
-        Normalized URL string
+        Normalized URL string.
+
+    Example:
+        >>> normalize_url_path("api/users")
+        'api/users/'
+        >>> normalize_url_path("//api//users//", leading_slash=True, trailing_slash=False)
+        '/api/users'
     """
     if not url:
         return "/"
