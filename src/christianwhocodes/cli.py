@@ -13,6 +13,7 @@ from christianwhocodes.utils import (
     ExitCode,
     PlatformInfo,
     Version,
+    copy_path,
     generate_random_string,
     print,
 )
@@ -81,6 +82,28 @@ def create_parser() -> ArgumentParser:
         help="Force overwrite without confirmation",
     )
 
+    # Copy subcommand
+    copy_parser = subparsers.add_parser(
+        "copy",
+        help="Copy files or folders from one location to another",
+    )
+    copy_parser.add_argument(
+        "-i",
+        "--input",
+        "--source",
+        dest="source",
+        required=True,
+        help="Source file or folder path to copy from",
+    )
+    copy_parser.add_argument(
+        "-o",
+        "--output",
+        "--destination",
+        dest="destination",
+        required=True,
+        help="Destination file or folder path to copy to",
+    )
+
     return parser
 
 
@@ -116,6 +139,9 @@ def main() -> NoReturn:
                 generator_class: type[FileGenerator] = generators[args.file]
                 generator: FileGenerator = generator_class()
                 generator.create(force=args.force)
+
+            case "copy":
+                copy_path(args.source, args.destination)
 
             case _:
                 print(
