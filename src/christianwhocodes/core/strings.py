@@ -1,12 +1,7 @@
 """String generation and manipulation utilities."""
 
-import secrets
 import string
 from typing import Any, Iterable
-
-from pyperclip import copy
-
-from ..io.console import Text, print
 
 
 def generate_random_string(
@@ -34,7 +29,13 @@ def generate_random_string(
         >>> random_str = generate_random_string(16, no_clipboard=True)
         Generated: nO5pQr8sT1uVw4xY
     """
-    random_str = "".join(secrets.choice(charset) for _ in range(length))
+    from secrets import choice
+
+    from pyperclip import copy
+
+    from ..io.console import Text, print
+
+    random_str = "".join(choice(charset) for _ in range(length))
 
     print(
         [

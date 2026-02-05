@@ -1,7 +1,6 @@
 """Configuration file parsing utilities."""
 
 from pathlib import Path
-from tomllib import load
 from typing import Any, Optional
 
 
@@ -36,6 +35,8 @@ class PyProject:
             tomllib.TOMLDecodeError: If the file is invalid TOML.
             KeyError: If the [project] section is missing.
         """
+        from tomllib import load
+
         self._toml_path = toml_path
 
         with open(toml_path, "rb") as f:

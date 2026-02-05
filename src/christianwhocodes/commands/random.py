@@ -3,7 +3,6 @@
 from argparse import Namespace
 
 from ..core.enums import ExitCode
-from ..core.strings import generate_random_string
 
 
 def handle_random_string(args: Namespace) -> ExitCode:
@@ -25,6 +24,8 @@ def handle_random_string(args: Namespace) -> ExitCode:
         Generated: aB3dEf7gHi9jKl2m
         Copied to clipboard!
     """
+    from ..core.strings import generate_random_string
+
     generate_random_string(length=args.length, no_clipboard=args.no_clipboard)
     return ExitCode.SUCCESS
 

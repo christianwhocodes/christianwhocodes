@@ -3,12 +3,6 @@
 from argparse import Namespace
 
 from ..core.enums import ExitCode
-from ..generators.base import FileGenerator, FileGeneratorOption
-from ..generators.configs import (
-    PgPassFileGenerator,
-    PgServiceFileGenerator,
-    SSHConfigFileGenerator,
-)
 
 
 def handle_file_generation(args: Namespace) -> ExitCode:
@@ -27,9 +21,17 @@ def handle_file_generation(args: Namespace) -> ExitCode:
 
     Example:
         $ christianwhocodes generate -f pgpass
+
         File written to /home/user/.pgpass
         Permissions set to 600 for /home/user/.pgpass
     """
+    from ..generators.base import FileGenerator, FileGeneratorOption
+    from ..generators.configs import (
+        PgPassFileGenerator,
+        PgServiceFileGenerator,
+        SSHConfigFileGenerator,
+    )
+
     # Map file generator options to their corresponding classes
     generators: dict[FileGeneratorOption, type[FileGenerator]] = {
         FileGeneratorOption.PG_SERVICE: PgServiceFileGenerator,

@@ -3,8 +3,6 @@
 from argparse import Namespace
 
 from ..core.enums import ExitCode
-from ..core.platform import Platform
-from ..io.console import print
 
 
 def handle_platform_info(args: Namespace) -> ExitCode:
@@ -24,6 +22,9 @@ def handle_platform_info(args: Namespace) -> ExitCode:
         Architecture: x64
         Full: windows-x64
     """
+    from ..core.platform import Platform
+    from ..io.console import print
+
     platform_info = Platform()
     print(f"[bold cyan]Platform:[/] {platform_info.os_name}")
     print(f"[bold cyan]Architecture:[/] {platform_info.architecture}")

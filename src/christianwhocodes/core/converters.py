@@ -1,6 +1,5 @@
 """Type conversion utilities for common data transformations."""
 
-import os
 from pathlib import Path
 from typing import Any, Callable, Optional, cast
 
@@ -83,6 +82,8 @@ class TypeConverter:
             >>> TypeConverter.to_path("./relative/path", resolve=False)
             PosixPath('relative/path')
         """
+        from os.path import expandvars
+
         # Convert to Path if string
         if isinstance(value, str):
             path = Path(value)
@@ -96,7 +97,7 @@ class TypeConverter:
         # Expand environment variables
         path_str = str(path)
         if "$" in path_str:
-            path = Path(os.path.expandvars(path_str))
+            path = Path(expandvars(path_str))
 
         # Resolve to absolute path if requested
         if resolve:

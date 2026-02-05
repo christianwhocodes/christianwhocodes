@@ -3,7 +3,6 @@
 from argparse import Namespace
 
 from ..core.enums import ExitCode
-from ..io.filesystem import copy_path
 
 
 def handle_copy_operation(args: Namespace) -> ExitCode:
@@ -24,6 +23,8 @@ def handle_copy_operation(args: Namespace) -> ExitCode:
         $ christianwhocodes copy -i ./src -o ./backup/src
         Directory copied successfully from ./src to ./backup/src
     """
+    from ..io.filesystem import copy_path
+
     success = copy_path(args.source, args.destination)
     return ExitCode.SUCCESS if success else ExitCode.ERROR
 

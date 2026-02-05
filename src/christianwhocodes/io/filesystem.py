@@ -3,13 +3,12 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 from shutil import copy2, copytree, rmtree
-from typing import Union
+from typing import TypeAlias, Union
 
-from ..core.converters import TypeConverter
 from .console import Text, print
 
 # Type alias for path-like objects
-PathLike = Union[str, Path]
+PathLike: TypeAlias = Union[str, Path]
 
 
 class Copier(ABC):
@@ -196,6 +195,8 @@ def copy_path(source: PathLike, destination: PathLike) -> bool:
         >>> copy_path("./src/", "./backup/src/")
         True
     """
+    from ..core.converters import TypeConverter
+
     source_path = TypeConverter.to_path(source)
     dest_path = TypeConverter.to_path(destination)
 

@@ -3,7 +3,6 @@
 from os import environ
 from pathlib import Path
 from platform import system
-from stat import S_IRUSR, S_IWUSR
 
 from ..io.console import Text, print
 from .base import FileGenerator
@@ -93,6 +92,8 @@ class PgPassFileGenerator(FileGenerator):
             On Unix-like systems, this method sets file permissions to 600
             (owner read/write only) as required by PostgreSQL for security.
         """
+        from stat import S_IRUSR, S_IWUSR
+
         super().create(force=force)
 
         # Set strict permissions on Unix-like systems
