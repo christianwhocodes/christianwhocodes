@@ -5,7 +5,7 @@ developer tasks including file generation, string manipulation, and system
 information.
 
 The package is organized into semantic modules:
-- core: Core utilities (version, platform, types, strings)
+- core: Core utilities (version, platform, types, strings, math)
 - io: Input/output operations (console, filesystem)
 - generators: Configuration file generators
 - commands: CLI command implementations
@@ -19,7 +19,18 @@ from .core import (
     PyProject,
     TypeConverter,
     Version,
+    factorial,
+    fibonacci,
+    fibonacci_sequence,
+    gcd,
     generate_random_string,
+    is_even,
+    is_factorial,
+    is_odd,
+    is_perfect_square,
+    is_power_of_two,
+    is_prime,
+    lcm,
     max_length_from_choices,
     normalize_url_path,
     print_version,
@@ -44,6 +55,18 @@ __all__ = [
     "max_length_from_choices",
     "normalize_url_path",
     "print_version",
+    # Math utilities
+    "is_prime",
+    "is_factorial",
+    "gcd",
+    "lcm",
+    "fibonacci",
+    "fibonacci_sequence",
+    "is_perfect_square",
+    "factorial",
+    "is_even",
+    "is_odd",
+    "is_power_of_two",
     # Generators
     "FileGenerator",
     "FileGeneratorOption",
