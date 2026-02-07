@@ -180,7 +180,7 @@ def progress_bar() -> Generator[Progress, None, None]:
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
-        _console=_console,
+        console=_console,
     ) as progress:
         yield progress
 
