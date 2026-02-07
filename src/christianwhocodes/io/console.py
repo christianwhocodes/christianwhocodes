@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.theme import Theme
 
-# Global verbosity state
+# Global quiet mode state
 _quiet_mode = False
 
 
@@ -103,13 +103,13 @@ def print(
     """
     # Skip non-essential output in quiet mode
     if _quiet_mode and not force:
-        # In quiet mode: always show errors, warnings, and success messages
+        # In quiet mode: always show errors, warnings, success messages, and highlighted text
         # Only suppress INFO and DEBUG messages
         if color in (Text.INFO, Text.DEBUG):
             return
-        # For list mode, check if any segment has non-essential colors
+        # For list mode, check if any segment has essential colors
         if isinstance(text, list):
-            # Allow the output if it contains SUCCESS, ERROR, or WARNING
+            # Allow the output if it contains SUCCESS, ERROR, WARNING, or HIGHLIGHT
             has_essential = any(
                 segment_color in (Text.SUCCESS, Text.ERROR, Text.WARNING, Text.HIGHLIGHT)
                 for _, segment_color in text

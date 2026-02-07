@@ -221,7 +221,7 @@ def main() -> NoReturn:
     args = parser.parse_args(argv[1:])
 
     # Set quiet mode if requested
-    if hasattr(args, 'quiet') and args.quiet:
+    if args.quiet:
         set_quiet_mode(True)
 
     try:
