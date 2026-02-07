@@ -100,11 +100,12 @@ class PgPassFileGenerator(FileGenerator):
         if system() != "Windows":
             try:
                 self.file_path.chmod(S_IRUSR | S_IWUSR)  # chmod 600
-                print(f"Permissions set to 600 for {self.file_path}", Text.SUCCESS)
+                print(f"✓ Permissions set to 600 for {self.file_path}", Text.SUCCESS)
             except Exception as e:
                 print(
                     f"Warning: could not set permissions on {self.file_path}: {e}",
                     Text.WARNING,
+                    force=True,
                 )
 
 

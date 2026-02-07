@@ -33,13 +33,14 @@ def generate_random_string(
 
     from pyperclip import copy
 
-    from ..io.console import Text, print
+    from ..io.console import Text, print, status
 
-    random_str = "".join(choice(charset) for _ in range(length))
+    with status("Generating secure random string..."):
+        random_str = "".join(choice(charset) for _ in range(length))
 
     print(
         [
-            ("Generated: ", Text.INFO),
+            ("✓ Generated: ", Text.SUCCESS),
             (random_str, Text.HIGHLIGHT),
         ]
     )
@@ -48,9 +49,9 @@ def generate_random_string(
     if not no_clipboard:
         try:
             copy(random_str)
-            print("Copied to clipboard!", Text.SUCCESS)
+            print("✓ Copied to clipboard!", Text.SUCCESS)
         except Exception as e:
-            print(f"Could not copy to clipboard: {e}", Text.WARNING)
+            print(f"Could not copy to clipboard: {e}", Text.WARNING, force=True)
 
     return random_str
 

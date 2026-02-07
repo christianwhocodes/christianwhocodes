@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from enum import StrEnum
 from pathlib import Path
 
-from ..io.console import Text, print
+from ..io.console import Text, print, status
 
 
 class FileGenerator(ABC):
@@ -60,18 +60,18 @@ class FileGenerator(ABC):
         ):
             attempts = 0
             while attempts < 3:
-                print(f"'{self.file_path}' exists and is not empty", Text.WARNING)
+                print(f"'{self.file_path}' exists and is not empty", Text.WARNING, force=True)
                 resp = input("overwrite? [y/N]: ").strip().lower()
                 match resp:
                     case "y" | "yes":
                         return True
                     case "n" | "no" | "":
-                        print("Aborted.", Text.WARNING)
+                        print("Aborted.", Text.WARNING, force=True)
                         return False
                     case _:
-                        print("Please answer with 'y' or 'n'.", Text.INFO)
+                        print("Please answer with 'y' or 'n'.", Text.INFO, force=True)
                         attempts += 1
-            print("Too many invalid responses. Aborted.", Text.WARNING)
+            print("Too many invalid responses. Aborted.", Text.WARNING, force=True)
             return False
         else:
             return True
@@ -91,9 +91,10 @@ class FileGenerator(ABC):
         # Ensure parent directory exists
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Write data provided by subclass
-        self.file_path.write_text(self.data)
-        print(f"File written to {self.file_path}", Text.SUCCESS)
+        # Write data provided by subclass with status indicator
+        with status(f"Creating {self.file_path.name}..."):
+            self.file_path.write_text(self.data)
+        print(f"✓ File written to {self.file_path}", Text.SUCCESS)
 
 
 class FileGeneratorOption(StrEnum):

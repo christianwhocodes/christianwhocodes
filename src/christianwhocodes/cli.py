@@ -17,7 +17,7 @@ from christianwhocodes.commands import (
 )
 from christianwhocodes.core import ExitCode, Version
 from christianwhocodes.generators import FileGeneratorOption
-from christianwhocodes.io import Text, print
+from christianwhocodes.io import Text, print, set_quiet_mode
 
 # ============================================================================
 # ARGUMENT PARSER CONFIGURATION
@@ -135,6 +135,13 @@ def create_parser() -> ArgumentParser:
         help="Display platform and architecture information",
     )
 
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Suppress non-essential output (spinners and success messages)",
+    )
+
     # Create subparsers for commands
     subparsers = parser.add_subparsers(
         dest="command",
@@ -213,15 +220,19 @@ def main() -> NoReturn:
     parser = create_parser()
     args = parser.parse_args(argv[1:])
 
+    # Set quiet mode if requested
+    if args.quiet:
+        set_quiet_mode(True)
+
     try:
         exit_code = dispatch_command(args)
     except KeyboardInterrupt:
         # Handle Ctrl+C gracefully
-        print("\nOperation cancelled by user.", Text.WARNING)
+        print("\nOperation cancelled by user.", Text.WARNING, force=True)
         exit_code = ExitCode.ERROR
     except Exception as e:
         # Catch unexpected errors and provide debugging information
-        print(f"Error: {e}", Text.ERROR)
+        print(f"Error: {e}", Text.ERROR, force=True)
         exit_code = ExitCode.ERROR
 
     exit(exit_code)
