@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from enum import StrEnum
 from pathlib import Path
 
-from ..io.console import Text, print
+from ..io.console import Text, print, status
 
 
 class FileGenerator(ABC):
@@ -91,9 +91,11 @@ class FileGenerator(ABC):
         # Ensure parent directory exists
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Write data provided by subclass
-        self.file_path.write_text(self.data)
-        print(f"File written to {self.file_path}", Text.SUCCESS)
+        # Write data provided by subclass with status indicator
+        with status(f"Creating {self.file_path.name}..."):
+            self.file_path.write_text(self.data)
+        
+        print(f"✓ File written to {self.file_path}", Text.SUCCESS)
 
 
 class FileGeneratorOption(StrEnum):

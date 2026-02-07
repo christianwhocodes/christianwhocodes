@@ -1,9 +1,11 @@
 """Console output utilities for rich-formatted text."""
 
+from contextlib import contextmanager
 from enum import StrEnum
-from typing import Optional
+from typing import Generator, Optional
 
 from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.theme import Theme
 
 
@@ -88,4 +90,51 @@ def print(
             _console.print(text, end=end)
 
 
-__all__: list[str] = ["Text", "print"]
+@contextmanager
+def status(message: str, spinner: str = "dots") -> Generator[None, None, None]:
+    """Display a status message with a spinner while executing a block of code.
+
+    This is a context manager that shows an animated spinner with a message
+    during long-running operations.
+
+    Args:
+        message: The status message to display.
+        spinner: The spinner style to use (default: "dots").
+
+    Yields:
+        None
+
+    Example:
+        with status("Copying files..."):
+            # Perform long operation
+            copy_files()
+    """
+    with _console.status(message, spinner=spinner):
+        yield
+
+
+@contextmanager
+def progress_bar() -> Generator[Progress, None, None]:
+    """Create a progress bar context for tracking operations.
+
+    Returns a Progress instance that can be used to track tasks with
+    progress updates.
+
+    Yields:
+        Progress: A rich Progress instance for tracking tasks.
+
+    Example:
+        with progress_bar() as progress:
+            task = progress.add_task("Processing...", total=100)
+            for i in range(100):
+                progress.update(task, advance=1)
+    """
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        _console=_console,
+    ) as progress:
+        yield progress
+
+
+__all__: list[str] = ["Text", "print", "status", "progress_bar"]

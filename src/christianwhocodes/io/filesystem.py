@@ -5,7 +5,7 @@ from pathlib import Path
 from shutil import copy2, copytree, rmtree
 from typing import TypeAlias, Union
 
-from .console import Text, print
+from .console import Text, print, status
 
 # Type alias for path-like objects
 PathLike: TypeAlias = Union[str, Path]
@@ -80,10 +80,13 @@ class FileCopier(Copier):
 
         try:
             destination.parent.mkdir(parents=True, exist_ok=True)
-            copy2(source, destination)
+            
+            with status(f"Copying file {source.name}..."):
+                copy2(source, destination)
+            
             print(
                 [
-                    ("File copied successfully from ", Text.SUCCESS),
+                    ("✓ File copied successfully from ", Text.SUCCESS),
                     (str(source), Text.HIGHLIGHT),
                     (" to ", Text.SUCCESS),
                     (str(destination), Text.HIGHLIGHT),
@@ -142,10 +145,12 @@ class DirectoryCopier(Copier):
                     return False
                 rmtree(destination)
 
-            copytree(source, destination, dirs_exist_ok=False)
+            with status(f"Copying directory {source.name}..."):
+                copytree(source, destination, dirs_exist_ok=False)
+            
             print(
                 [
-                    ("Directory copied successfully from ", Text.SUCCESS),
+                    ("✓ Directory copied successfully from ", Text.SUCCESS),
                     (str(source), Text.HIGHLIGHT),
                     (" to ", Text.SUCCESS),
                     (str(destination), Text.HIGHLIGHT),
