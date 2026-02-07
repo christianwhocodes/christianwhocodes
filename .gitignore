@@ -12,6 +12,9 @@ wheels/
 # Ruff cache
 /.ruff_cache/
 
+# Pytest cache
+/.pytest_cache/
+
 # Temporary files
 /.tmp/
 /src/tmp/

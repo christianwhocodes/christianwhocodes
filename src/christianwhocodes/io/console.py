@@ -5,6 +5,7 @@ from enum import StrEnum
 from typing import Generator
 
 from rich.console import Console
+from rich.markup import escape
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.theme import Theme
 
@@ -124,14 +125,14 @@ def print(
         output = ""
         for segment_text, segment_color in text:
             if segment_color:
-                output += f"[{segment_color}]{segment_text}[/{segment_color}]"
+                output += f"[{segment_color}]{escape(segment_text)}[/{segment_color}]"
             else:
-                output += segment_text
+                output += escape(segment_text)
         _console.print(output, end=end)
     else:
         # Single color mode: wrap the entire text in one markup tag.
         if color:
-            _console.print(f"[{color}]{text}[/{color}]", end=end)
+            _console.print(f"[{color}]{escape(text)}[/{color}]", end=end)
         else:
             _console.print(text, end=end)
 
