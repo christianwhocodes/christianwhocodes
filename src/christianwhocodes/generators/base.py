@@ -94,7 +94,6 @@ class FileGenerator(ABC):
         # Write data provided by subclass with status indicator
         with status(f"Creating {self.file_path.name}..."):
             self.file_path.write_text(self.data)
-        
         print(f"✓ File written to {self.file_path}", Text.SUCCESS)
 
 

@@ -83,7 +83,6 @@ class FileCopier(Copier):
             
             with status(f"Copying file {source.name}..."):
                 copy2(source, destination)
-            
             print(
                 [
                     ("✓ File copied successfully from ", Text.SUCCESS),
@@ -147,7 +146,6 @@ class DirectoryCopier(Copier):
 
             with status(f"Copying directory {source.name}..."):
                 copytree(source, destination, dirs_exist_ok=False)
-            
             print(
                 [
                     ("✓ Directory copied successfully from ", Text.SUCCESS),
