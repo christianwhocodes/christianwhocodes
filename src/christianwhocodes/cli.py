@@ -139,7 +139,7 @@ def create_parser() -> ArgumentParser:
         "-q",
         "--quiet",
         action="store_true",
-        help="Suppress non-essential output (spinners and success messages)",
+        help="Suppress non-essential output (spinners, info and debug messages)",
     )
 
     # Create subparsers for commands
@@ -160,7 +160,9 @@ def create_parser() -> ArgumentParser:
 # COMMAND ROUTING AND EXECUTION
 # ============================================================================
 
-# Command registry maps command names to their handler functions
+# Command registry: maps every recognised command name (including aliases)
+# to the handler function that implements it.  Adding a new command just
+# requires a new entry here plus a subparser configuration above.
 COMMAND_HANDLERS: dict[str, Callable[[Namespace], ExitCode]] = {
     "random": handle_random_string,
     "generaterandom": handle_random_string,
@@ -227,11 +229,12 @@ def main() -> NoReturn:
     try:
         exit_code = dispatch_command(args)
     except KeyboardInterrupt:
-        # Handle Ctrl+C gracefully
+        # Ctrl+C during any command — exit cleanly instead of traceback.
         print("\nOperation cancelled by user.", Text.WARNING, force=True)
         exit_code = ExitCode.ERROR
     except Exception as e:
-        # Catch unexpected errors and provide debugging information
+        # Last-resort safety net — ensures the CLI never dumps a raw
+        # traceback to the user; always exits with a controlled message.
         print(f"Error: {e}", Text.ERROR, force=True)
         exit_code = ExitCode.ERROR
 

@@ -23,12 +23,27 @@ def handle_platform_info(args: Namespace) -> ExitCode:
         Full: windows-x64
     """
     from ..core.platform import Platform
-    from ..io.console import print
+    from ..io.console import Text, print
 
     platform_info = Platform()
-    print(f"[bold cyan]Platform:[/] {platform_info.os_name}")
-    print(f"[bold cyan]Architecture:[/] {platform_info.architecture}")
-    print(f"[bold cyan]Full:[/] {platform_info}")
+    print(
+        [
+            ("Platform: ", Text.INFO),
+            (platform_info.os_name, None),
+        ]
+    )
+    print(
+        [
+            ("Architecture: ", Text.INFO),
+            (platform_info.architecture, None),
+        ]
+    )
+    print(
+        [
+            ("Full: ", Text.INFO),
+            (str(platform_info), None),
+        ]
+    )
     return ExitCode.SUCCESS
 
 

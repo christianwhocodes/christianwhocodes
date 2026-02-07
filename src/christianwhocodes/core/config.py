@@ -1,7 +1,7 @@
 """Configuration file parsing utilities."""
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 
 class PyProject:
@@ -70,7 +70,7 @@ class PyProject:
         return self._data["project"]["version"]
 
     @property
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """Return the project description, if any."""
         return self._data["project"].get("description")
 
@@ -85,7 +85,7 @@ class PyProject:
         return self._data["project"].get("dependencies", [])
 
     @property
-    def python_requires(self) -> Optional[str]:
+    def python_requires(self) -> str | None:
         """Return the required Python version."""
         return self._data["project"].get("requires-python")
 

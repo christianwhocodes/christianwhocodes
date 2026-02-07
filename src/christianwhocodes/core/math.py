@@ -1,8 +1,7 @@
 """Mathematical utility functions for common calculations."""
 
 import math
-from functools import lru_cache
-from typing import Generator
+from collections.abc import Generator
 
 
 def is_prime(n: int) -> bool:
@@ -143,14 +142,13 @@ def lcm(a: int, b: int) -> int:
     return math.lcm(a, b)
 
 
-@lru_cache(maxsize=None)
 def fibonacci(n: int) -> int:
     """Calculate the nth Fibonacci number.
 
     The Fibonacci sequence is defined as:
     F(0) = 0, F(1) = 1, F(n) = F(n-1) + F(n-2) for n > 1
 
-    This function uses memoization for improved performance on repeated calls.
+    Uses an iterative approach with O(n) time and O(1) space complexity.
 
     Args:
         n: The position in the Fibonacci sequence (0-indexed).
@@ -242,7 +240,7 @@ def is_perfect_square(n: int) -> bool:
     """
     if n < 0:
         raise ValueError("n must be non-negative")
-    root = int(math.sqrt(n))
+    root = math.isqrt(n)
     return root * root == n
 
 

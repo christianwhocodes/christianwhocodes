@@ -19,6 +19,7 @@ from .core import (
     PyProject,
     TypeConverter,
     Version,
+    VersionResult,
     fibonacci,
     fibonacci_sequence,
     gcd,
@@ -37,6 +38,7 @@ from .core import (
 from .generators import (
     FileGenerator,
     FileGeneratorOption,
+    PgConfigFilesEnum,
     PgPassFileGenerator,
     PgServiceFileGenerator,
     SSHConfigFileGenerator,
@@ -50,6 +52,7 @@ __all__ = [
     "PyProject",
     "TypeConverter",
     "Version",
+    "VersionResult",
     "generate_random_string",
     "max_length_from_choices",
     "normalize_url_path",
@@ -71,6 +74,7 @@ __all__ = [
     "PgPassFileGenerator",
     "PgServiceFileGenerator",
     "SSHConfigFileGenerator",
+    "PgConfigFilesEnum",
     # I/O
     "Text",
     "copy_path",

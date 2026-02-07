@@ -39,7 +39,7 @@ def normalize_url_path(
     elif not trailing_slash and url.endswith("/"):
         url = url.rstrip("/")
 
-    return url
+    return url or "/"
 
 
 __all__: list[str] = ["normalize_url_path"]

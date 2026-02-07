@@ -1,8 +1,20 @@
 """Version management and retrieval utilities."""
 
-from typing import Literal
+from typing import Literal, NamedTuple
 
 from .enums import ExitCode
+
+
+class VersionResult(NamedTuple):
+    """Result of a version lookup.
+
+    Attributes:
+        version: The version string, or a placeholder if lookup failed.
+        error: Empty string on success, error details on failure.
+    """
+
+    version: str
+    error: str
 
 
 class Version:
@@ -18,25 +30,25 @@ class Version:
         return "X.Y.Z"
 
     @staticmethod
-    def get(package: str) -> tuple[str, str]:
+    def get(package: str) -> VersionResult:
         """Get the installed version of a package.
 
         Args:
             package: Name of the package to get version for.
 
         Returns:
-            Tuple of (version_string, error_message).
-            If successful, error_message is empty.
-            If failed, version_string is the placeholder and error_message contains details.
+            VersionResult with version string and error message.
+            If successful, error is empty.
+            If failed, version is the placeholder and error contains details.
         """
         try:
             from importlib.metadata import version
 
-            return version(package), ""
+            return VersionResult(version(package), "")
         except Exception as e:
-            return (
+            return VersionResult(
                 Version.placeholder(),
-                f"Could not determine version\n{str(e)}",
+                f"Could not determine version\n{e}",
             )
 
 
@@ -69,4 +81,4 @@ def print_version(package: str) -> ExitCode:
         return ExitCode.ERROR
 
 
-__all__: list[str] = ["Version", "print_version"]
+__all__: list[str] = ["Version", "VersionResult", "print_version"]

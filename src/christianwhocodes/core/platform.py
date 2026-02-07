@@ -1,6 +1,7 @@
 """Platform and architecture detection utilities."""
 
 from platform import machine, system
+from typing import ClassVar
 
 
 class Platform:
@@ -14,13 +15,13 @@ class Platform:
         architecture: Normalized CPU architecture (x64, arm64).
     """
 
-    PLATFORM_MAP = {
+    PLATFORM_MAP: ClassVar[dict[str, str]] = {
         "darwin": "macos",
         "linux": "linux",
         "windows": "windows",
     }
 
-    ARCH_MAP = {
+    ARCH_MAP: ClassVar[dict[str, str]] = {
         "x86_64": "x64",
         "amd64": "x64",
         "x64": "x64",
@@ -77,6 +78,68 @@ class Platform:
     def __str__(self) -> str:
         """Return string representation in format 'os-architecture'."""
         return f"{self.os_name}-{self.architecture}"
+
+    def __repr__(self) -> str:
+        """Return detailed string representation for debugging.
+
+        Without this, repr() would show something unhelpful like
+        ``<Platform object at 0x7f...>``.  With it you get a readable,
+        copy-pasteable representation.
+
+        Example::
+
+            >>> p = Platform()
+            >>> repr(p)
+            "Platform(os_name='windows', architecture='x64')"
+
+            >>> p          # in the REPL / debugger, __repr__ is called automatically
+            Platform(os_name='windows', architecture='x64')
+        """
+        return f"Platform(os_name={self.os_name!r}, architecture={self.architecture!r})"
+
+    def __eq__(self, other: object) -> bool:
+        """Check equality based on OS name and architecture.
+
+        Without this, ``==`` compares memory addresses, so two Platform
+        instances on the same machine would be considered *not* equal.
+        With it, equality is determined by matching os_name and architecture.
+
+        Example::
+
+            >>> a = Platform()
+            >>> b = Platform()
+            >>> a == b          # True — same OS and architecture
+            True
+
+            >>> a == "windows"  # comparing to a non-Platform returns NotImplemented
+            False               # (Python falls back to False)
+        """
+        if not isinstance(other, Platform):
+            return NotImplemented
+        return self.os_name == other.os_name and self.architecture == other.architecture
+
+    def __hash__(self) -> int:
+        """Return hash based on OS name and architecture.
+
+        Once ``__eq__`` is defined, Python makes the class unhashable by
+        default.  This re-enables hashing so Platform instances can be
+        used in sets and as dictionary keys.
+
+        Example::
+
+            >>> p = Platform()
+
+            >>> # Use as a dictionary key
+            >>> downloads = {p: "https://example.com/app-windows-x64.zip"}
+            >>> downloads[Platform()]
+            'https://example.com/app-windows-x64.zip'
+
+            >>> # Use in a set (duplicates are automatically removed)
+            >>> platforms = {Platform(), Platform()}
+            >>> len(platforms)
+            1
+        """
+        return hash((self.os_name, self.architecture))
 
 
 __all__: list[str] = ["Platform"]

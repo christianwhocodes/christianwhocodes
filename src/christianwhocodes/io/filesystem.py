@@ -3,12 +3,12 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 from shutil import copy2, copytree, rmtree
-from typing import TypeAlias, Union
+from typing import TypeAlias
 
 from .console import Text, print, status
 
 # Type alias for path-like objects
-PathLike: TypeAlias = Union[str, Path]
+PathLike: TypeAlias = str | Path
 
 
 class Copier(ABC):
@@ -99,7 +99,9 @@ class FileCopier(Copier):
             )
             return False
         except Exception as e:
-            print(f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR, force=True)
+            print(
+                f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR, force=True
+            )
             return False
 
 
@@ -163,7 +165,11 @@ class DirectoryCopier(Copier):
             )
             return False
         except Exception as e:
-            print(f"Failed to copy directory: {type(e).__name__}: {e}", Text.ERROR, force=True)
+            print(
+                f"Failed to copy directory: {type(e).__name__}: {e}",
+                Text.ERROR,
+                force=True,
+            )
             return False
 
     def _prompt_overwrite(self, destination: Path) -> bool:
@@ -206,17 +212,21 @@ def copy_path(source: PathLike, destination: PathLike) -> bool:
 
     copier: Copier
 
-    # Determine copier based on source type
+    # Automatically pick the right copier strategy based on source type.
+    # The Copier subclass handles all validation and error reporting internally.
     if source_path.is_file():
         copier = FileCopier()
     elif source_path.is_dir():
         copier = DirectoryCopier()
     else:
+        # Source is neither file nor directory — report the specific reason.
         if not source_path.exists():
             print(f"Source path does not exist: {source_path}", Text.ERROR, force=True)
         else:
             print(
-                f"Source is neither a file nor a directory: {source_path}", Text.ERROR, force=True
+                f"Source is neither a file nor a directory: {source_path}",
+                Text.ERROR,
+                force=True,
             )
         return False
 

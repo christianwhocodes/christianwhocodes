@@ -1,7 +1,7 @@
 """Type conversion utilities for common data transformations."""
 
 from pathlib import Path
-from typing import Any, Callable, Optional, cast
+from typing import Any, Callable, cast
 
 
 class TypeConverter:
@@ -26,7 +26,7 @@ class TypeConverter:
 
     @staticmethod
     def to_list_of_str(
-        value: Any, transform: Optional[Callable[[str], str]] = None
+        value: Any, transform: Callable[[str], str] | None = None
     ) -> list[str]:
         """Convert a value into a list of strings.
 

@@ -25,8 +25,27 @@ def handle_random_string(args: Namespace) -> ExitCode:
         Copied to clipboard!
     """
     from ..core.strings import generate_random_string
+    from ..io.console import Text, print, status
 
-    generate_random_string(length=args.length, no_clipboard=args.no_clipboard)
+    with status("Generating secure random string..."):
+        random_str = generate_random_string(length=args.length)
+
+    print(
+        [
+            ("✓ Generated: ", Text.SUCCESS),
+            (random_str, Text.HIGHLIGHT),
+        ]
+    )
+
+    if not args.no_clipboard:
+        try:
+            from pyperclip import copy
+
+            copy(random_str)
+            print("✓ Copied to clipboard!", Text.SUCCESS)
+        except Exception as e:
+            print(f"Could not copy to clipboard: {e}", Text.WARNING, force=True)
+
     return ExitCode.SUCCESS
 
 

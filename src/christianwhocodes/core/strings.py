@@ -6,54 +6,33 @@ from typing import Any, Iterable
 
 def generate_random_string(
     length: int = 32,
-    no_clipboard: bool = False,
     charset: str = string.ascii_letters + string.digits,
 ) -> str:
     """Generate a cryptographically secure random string.
 
-    Creates a random string using the secrets module for cryptographic strength
-    and optionally copies it to the clipboard.
+    Uses the secrets module for cryptographic strength. This is a pure function
+    with no side effects — clipboard and console output are handled by the CLI layer.
 
     Args:
         length: Length of the random string (default: 32).
-        no_clipboard: If True, skip copying to clipboard (default: False).
         charset: Character set to use (default: alphanumeric).
 
     Returns:
         The generated random string.
 
+    Raises:
+        ValueError: If length is not positive.
+
     Example:
-        >>> random_str = generate_random_string(16)
-        Generated: aB3dEf7gHi9jKl2m
-        Copied to clipboard!
-        >>> random_str = generate_random_string(16, no_clipboard=True)
-        Generated: nO5pQr8sT1uVw4xY
+        >>> generate_random_string(16)
+        'aB3dEf7gHi9jKl2m'
     """
+    if length <= 0:
+        raise ValueError("length must be positive")
+
     from secrets import choice
 
-    from pyperclip import copy
-
-    from ..io.console import Text, print, status
-
-    with status("Generating secure random string..."):
-        random_str = "".join(choice(charset) for _ in range(length))
-
-    print(
-        [
-            ("✓ Generated: ", Text.SUCCESS),
-            (random_str, Text.HIGHLIGHT),
-        ]
-    )
-
-    # Copy to clipboard unless disabled
-    if not no_clipboard:
-        try:
-            copy(random_str)
-            print("✓ Copied to clipboard!", Text.SUCCESS)
-        except Exception as e:
-            print(f"Could not copy to clipboard: {e}", Text.WARNING, force=True)
-
-    return random_str
+    return "".join(choice(charset) for _ in range(length))
 
 
 def max_length_from_choices(choices: Iterable[tuple[str, Any]]) -> int:
@@ -65,14 +44,16 @@ def max_length_from_choices(choices: Iterable[tuple[str, Any]]) -> int:
         choices: Iterable of (value, display) tuples.
 
     Returns:
-        The maximum length of the value field.
+        The maximum length of the value field, or 0 if choices is empty.
 
     Example:
         >>> choices = [("short", "Short option"), ("very_long_option", "Long")]
         >>> max_length_from_choices(choices)
         16
+        >>> max_length_from_choices([])
+        0
     """
-    return max(len(choice[0]) for choice in choices)
+    return max((len(choice[0]) for choice in choices), default=0)
 
 
 __all__: list[str] = ["generate_random_string", "max_length_from_choices"]

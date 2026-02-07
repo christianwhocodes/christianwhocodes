@@ -2,7 +2,7 @@
 
 from contextlib import contextmanager
 from enum import StrEnum
-from typing import Generator, Optional
+from typing import Generator
 
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -71,8 +71,8 @@ def is_quiet() -> bool:
 
 
 def print(
-    text: str | list[tuple[str, Optional[str]]],
-    color: Optional[str] = None,
+    text: str | list[tuple[str, str | None]],
+    color: str | None = None,
     end: str = "\n",
     force: bool = False,
 ) -> None:
@@ -103,22 +103,24 @@ def print(
     """
     # Skip non-essential output in quiet mode
     if _quiet_mode and not force:
-        # In quiet mode: always show errors, warnings, success messages, and highlighted text
-        # Only suppress INFO and DEBUG messages
+        # Errors, warnings, success, and highlights are always shown.
+        # Only INFO and DEBUG messages are suppressed in quiet mode.
         if color in (Text.INFO, Text.DEBUG):
             return
-        # For list mode, check if any segment has essential colors
+        # For multi-segment output, allow it through if at least one
+        # segment carries an essential style — otherwise suppress.
         if isinstance(text, list):
-            # Allow the output if it contains SUCCESS, ERROR, WARNING, or HIGHLIGHT
             has_essential = any(
-                segment_color in (Text.SUCCESS, Text.ERROR, Text.WARNING, Text.HIGHLIGHT)
+                segment_color
+                in (Text.SUCCESS, Text.ERROR, Text.WARNING, Text.HIGHLIGHT)
                 for _, segment_color in text
             )
             if not has_essential:
                 return
-    
+
     if isinstance(text, list):
-        # Multi-colored mode: text is a list of (text, color) tuples
+        # Multi-colored mode: build a single rich markup string
+        # from a list of (text, color) tuples, then print at once.
         output = ""
         for segment_text, segment_color in text:
             if segment_color:
@@ -127,7 +129,7 @@ def print(
                 output += segment_text
         _console.print(output, end=end)
     else:
-        # Single color mode
+        # Single color mode: wrap the entire text in one markup tag.
         if color:
             _console.print(f"[{color}]{text}[/{color}]", end=end)
         else:
@@ -185,4 +187,11 @@ def progress_bar() -> Generator[Progress, None, None]:
         yield progress
 
 
-__all__: list[str] = ["Text", "print", "status", "progress_bar", "set_quiet_mode", "is_quiet"]
+__all__: list[str] = [
+    "Text",
+    "print",
+    "status",
+    "progress_bar",
+    "set_quiet_mode",
+    "is_quiet",
+]

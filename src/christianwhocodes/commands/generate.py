@@ -41,8 +41,8 @@ def handle_file_generation(args: Namespace) -> ExitCode:
 
     generator_class: type[FileGenerator] = generators[args.file]
     generator: FileGenerator = generator_class()
-    generator.create(force=args.force)
-    return ExitCode.SUCCESS
+    success = generator.create(force=args.force)
+    return ExitCode.SUCCESS if success else ExitCode.ERROR
 
 
 __all__: list[str] = ["handle_file_generation"]

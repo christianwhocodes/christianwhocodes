@@ -60,7 +60,11 @@ class FileGenerator(ABC):
         ):
             attempts = 0
             while attempts < 3:
-                print(f"'{self.file_path}' exists and is not empty", Text.WARNING, force=True)
+                print(
+                    f"'{self.file_path}' exists and is not empty",
+                    Text.WARNING,
+                    force=True,
+                )
                 resp = input("overwrite? [y/N]: ").strip().lower()
                 match resp:
                     case "y" | "yes":
@@ -76,7 +80,7 @@ class FileGenerator(ABC):
         else:
             return True
 
-    def create(self, force: bool = False) -> None:
+    def create(self, force: bool = False) -> bool:
         """Create or overwrite the file with the specified content.
 
         Creates parent directories if they don't exist and writes the file
@@ -84,9 +88,12 @@ class FileGenerator(ABC):
 
         Args:
             force: If True, overwrite without confirmation.
+
+        Returns:
+            True if the file was written, False if the operation was aborted.
         """
         if not self._confirm_overwrite_if_file_exists(force):
-            return  # Abort
+            return False  # Abort
 
         # Ensure parent directory exists
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -95,6 +102,7 @@ class FileGenerator(ABC):
         with status(f"Creating {self.file_path.name}..."):
             self.file_path.write_text(self.data)
         print(f"✓ File written to {self.file_path}", Text.SUCCESS)
+        return True
 
 
 class FileGeneratorOption(StrEnum):
