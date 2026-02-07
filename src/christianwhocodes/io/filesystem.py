@@ -80,7 +80,6 @@ class FileCopier(Copier):
 
         try:
             destination.parent.mkdir(parents=True, exist_ok=True)
-            
             with status(f"Copying file {source.name}..."):
                 copy2(source, destination)
             print(
