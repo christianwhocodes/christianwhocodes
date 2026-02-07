@@ -1,5 +1,5 @@
 [build-system]
-requires = ["uv_build>=0.9.30,<0.10.0"]
+requires = ["uv_build>=0.10.0,<0.11.0"]
 build-backend = "uv_build"
 
 [project.urls]
@@ -24,7 +24,7 @@ requires-python = ">=3.12"
 dependencies = ["pyperclip>=1.11.0", "rich>=14.3.2"]
 
 [dependency-groups]
-dev = ["ruff>=0.15.0", "pytest>=8.0.0"]
+dev = ["ruff>=0.15.0", "pytest>=9.0.2"]
 
 [[tool.uv.index]]
 name = "testpypi"
