@@ -60,18 +60,18 @@ class FileGenerator(ABC):
         ):
             attempts = 0
             while attempts < 3:
-                print(f"'{self.file_path}' exists and is not empty", Text.WARNING)
+                print(f"'{self.file_path}' exists and is not empty", Text.WARNING, force=True)
                 resp = input("overwrite? [y/N]: ").strip().lower()
                 match resp:
                     case "y" | "yes":
                         return True
                     case "n" | "no" | "":
-                        print("Aborted.", Text.WARNING)
+                        print("Aborted.", Text.WARNING, force=True)
                         return False
                     case _:
-                        print("Please answer with 'y' or 'n'.", Text.INFO)
+                        print("Please answer with 'y' or 'n'.", Text.INFO, force=True)
                         attempts += 1
-            print("Too many invalid responses. Aborted.", Text.WARNING)
+            print("Too many invalid responses. Aborted.", Text.WARNING, force=True)
             return False
         else:
             return True

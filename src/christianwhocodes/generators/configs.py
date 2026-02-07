@@ -105,6 +105,7 @@ class PgPassFileGenerator(FileGenerator):
                 print(
                     f"Warning: could not set permissions on {self.file_path}: {e}",
                     Text.WARNING,
+                    force=True,
                 )
 
 

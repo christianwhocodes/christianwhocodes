@@ -8,6 +8,9 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.theme import Theme
 
+# Global verbosity state
+_quiet_mode = False
+
 
 class Text(StrEnum):
     """Semantic color codes for styled console output.
@@ -44,10 +47,34 @@ _THEME = Theme(
 _console = Console(theme=_THEME)
 
 
+def set_quiet_mode(quiet: bool) -> None:
+    """Set the quiet mode for console output.
+
+    When quiet mode is enabled, non-essential output (status spinners,
+    success messages) is suppressed. Error and warning messages are
+    always shown regardless of quiet mode.
+
+    Args:
+        quiet: If True, suppress non-essential output.
+    """
+    global _quiet_mode
+    _quiet_mode = quiet
+
+
+def is_quiet() -> bool:
+    """Check if quiet mode is enabled.
+
+    Returns:
+        True if quiet mode is enabled, False otherwise.
+    """
+    return _quiet_mode
+
+
 def print(
     text: str | list[tuple[str, Optional[str]]],
     color: Optional[str] = None,
     end: str = "\n",
+    force: bool = False,
 ) -> None:
     """Print colored text to the console using rich formatting.
 
@@ -61,6 +88,7 @@ def print(
         color: The color/style to apply (from Text enum or rich color string).
                Only used when text is a string.
         end: String appended after the text (default: newline).
+        force: If True, print even in quiet mode. Used for errors/warnings.
 
     Examples:
         # Single color
@@ -73,6 +101,22 @@ def print(
             ("File not found", Text.WARNING)
         ])
     """
+    # Skip non-essential output in quiet mode
+    if _quiet_mode and not force:
+        # In quiet mode: always show errors, warnings, and success messages
+        # Only suppress INFO and DEBUG messages
+        if color in (Text.INFO, Text.DEBUG):
+            return
+        # For list mode, check if any segment has non-essential colors
+        if isinstance(text, list):
+            # Allow the output if it contains SUCCESS, ERROR, or WARNING
+            has_essential = any(
+                segment_color in (Text.SUCCESS, Text.ERROR, Text.WARNING, Text.HIGHLIGHT)
+                for _, segment_color in text
+            )
+            if not has_essential:
+                return
+    
     if isinstance(text, list):
         # Multi-colored mode: text is a list of (text, color) tuples
         output = ""
@@ -95,7 +139,7 @@ def status(message: str, spinner: str = "dots") -> Generator[None, None, None]:
     """Display a status message with a spinner while executing a block of code.
 
     This is a context manager that shows an animated spinner with a message
-    during long-running operations.
+    during long-running operations. Suppressed in quiet mode.
 
     Args:
         message: The status message to display.
@@ -109,8 +153,12 @@ def status(message: str, spinner: str = "dots") -> Generator[None, None, None]:
             # Perform long operation
             copy_files()
     """
-    with _console.status(message, spinner=spinner):
+    if _quiet_mode:
+        # In quiet mode, just execute without showing spinner
         yield
+    else:
+        with _console.status(message, spinner=spinner):
+            yield
 
 
 @contextmanager
@@ -137,4 +185,4 @@ def progress_bar() -> Generator[Progress, None, None]:
         yield progress
 
 
-__all__: list[str] = ["Text", "print", "status", "progress_bar"]
+__all__: list[str] = ["Text", "print", "status", "progress_bar", "set_quiet_mode", "is_quiet"]

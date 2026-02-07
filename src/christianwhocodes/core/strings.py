@@ -51,7 +51,7 @@ def generate_random_string(
             copy(random_str)
             print("✓ Copied to clipboard!", Text.SUCCESS)
         except Exception as e:
-            print(f"Could not copy to clipboard: {e}", Text.WARNING)
+            print(f"Could not copy to clipboard: {e}", Text.WARNING, force=True)
 
     return random_str
 
