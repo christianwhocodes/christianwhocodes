@@ -1,5 +1,5 @@
 [build-system]
-requires = ["uv_build>=0.10.0,<0.11.0"]
+requires = ["uv_build>=0.10.4,<0.11.0"]
 build-backend = "uv_build"
 
 [project.urls]
@@ -13,7 +13,7 @@ cwc = "christianwhocodes.cli:main"
 
 [project]
 name = "christianwhocodes"
-version = "1.3.4"
+version = "1.3.5"
 description = "Python utilities for developers."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -21,10 +21,10 @@ authors = [
     { name = "Kevin Wasike Wakhisi", email = "kevin@christianwhocodes.space" },
 ]
 requires-python = ">=3.12"
-dependencies = ["pyperclip>=1.11.0", "rich>=14.3.2"]
+dependencies = ["pyperclip>=1.11.0", "rich>=14.3.3"]
 
 [dependency-groups]
-dev = ["ruff>=0.15.0", "pytest>=9.0.2"]
+dev = ["ruff>=0.15.2", "pytest>=9.0.2"]
 
 [[tool.uv.index]]
 name = "testpypi"
