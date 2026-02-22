@@ -4,6 +4,8 @@ from argparse import Namespace
 
 from ...core import ExitCode, Platform, cprint
 
+__all__: list[str] = ["handle_platform_display"]
+
 
 def handle_platform_display(args: Namespace) -> ExitCode:
     """Handle the 'platform' display."""
