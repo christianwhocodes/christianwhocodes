@@ -7,7 +7,6 @@ from typing import TypeAlias
 
 from .console import Text, cprint, status
 
-
 __all__: list[str] = ["Copier", "FileCopier", "DirectoryCopier", "copy_path"]
 
 
@@ -47,7 +46,7 @@ class Copier(ABC):
 
         """
         if not source.exists():
-            cprint(f"Source path does not exist: {source}", Text.ERROR, force=True)
+            cprint(f"Source path does not exist: {source}", Text.ERROR)
             return False
         return True
 
@@ -83,7 +82,7 @@ class FileCopier(Copier):
             return False
 
         if not source.is_file():
-            cprint(f"Source is not a file: {source}", Text.ERROR, force=True)
+            cprint(f"Source is not a file: {source}", Text.ERROR)
             return False
 
         try:
@@ -103,11 +102,10 @@ class FileCopier(Copier):
             cprint(
                 "Permission denied. Check read/write permissions for source and destination.",
                 Text.ERROR,
-                force=True,
             )
             return False
         except Exception as e:
-            cprint(f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR, force=True)
+            cprint(f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR)
             return False
 
 
@@ -144,13 +142,13 @@ class DirectoryCopier(Copier):
             return False
 
         if not source.is_dir():
-            cprint(f"Source is not a directory: {source}", Text.ERROR, force=True)
+            cprint(f"Source is not a directory: {source}", Text.ERROR)
             return False
 
         try:
             if destination.exists():
                 if not self._prompt_overwrite(destination):
-                    cprint("Copy aborted.", Text.WARNING, force=True)
+                    cprint("Copy aborted.", Text.WARNING)
                     return False
                 rmtree(destination)
 
@@ -169,14 +167,12 @@ class DirectoryCopier(Copier):
             cprint(
                 "Permission denied. Check read/write permissions for source and destination.",
                 Text.ERROR,
-                force=True,
             )
             return False
         except Exception as e:
             cprint(
                 f"Failed to copy directory: {type(e).__name__}: {e}",
                 Text.ERROR,
-                force=True,
             )
             return False
 
@@ -190,7 +186,7 @@ class DirectoryCopier(Copier):
             True if the user enters 'y' or 'Y', False otherwise (defaults to no).
 
         """
-        cprint(f"\n{destination} already exists.", Text.WARNING, force=True)
+        cprint(f"\n{destination} already exists.", Text.WARNING)
         response = input("Overwrite? [y/N]: ").strip().lower()
         return response == "y"
 
@@ -231,12 +227,11 @@ def copy_path(source: _PathLike, destination: _PathLike) -> bool:
     else:
         # Source is neither file nor directory — report the specific reason.
         if not source_path.exists():
-            cprint(f"Source path does not exist: {source_path}", Text.ERROR, force=True)
+            cprint(f"Source path does not exist: {source_path}", Text.ERROR)
         else:
             cprint(
                 f"Source is neither a file nor a directory: {source_path}",
                 Text.ERROR,
-                force=True,
             )
         return False
 

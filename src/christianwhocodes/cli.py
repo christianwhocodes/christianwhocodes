@@ -68,10 +68,10 @@ def main() -> None:
         else:
             exit_code = args.func(args)
     except KeyboardInterrupt:
-        cprint("\nOperation cancelled.", Text.WARNING, force=True)
+        cprint("\nOperation cancelled.", Text.WARNING)
         exit_code = ExitCode.ERROR
     except Exception as e:
-        cprint(f"Error: {e}", Text.ERROR, force=True)
+        cprint(f"Error: {e}", Text.ERROR)
         exit_code = ExitCode.ERROR
 
     exit(exit_code)

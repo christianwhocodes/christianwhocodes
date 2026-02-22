@@ -44,6 +44,6 @@ def handle_random_string(args: Namespace) -> ExitCode:
             copy(random_str)
             cprint("✓ Copied to clipboard!", Text.SUCCESS)
         except Exception as e:
-            cprint(f"Could not copy to clipboard: {e}", Text.WARNING, force=True)
+            cprint(f"Could not copy to clipboard: {e}", Text.WARNING)
 
     return ExitCode.SUCCESS

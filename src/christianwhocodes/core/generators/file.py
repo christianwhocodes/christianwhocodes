@@ -123,14 +123,14 @@ class FileGenerator:
 
         for _ in range(3):
             # File exists and is not empty - ask for confirmation. Limit to 3 attempts to avoid infinite loops.
-            cprint(f"'{self.spec.path}' exists and is not empty", Text.WARNING, force=True)
+            cprint(f"'{self.spec.path}' exists and is not empty", Text.WARNING)
             resp = input("overwrite? [y/N]: ").strip().lower()
             if resp in ("y", "yes"):
                 return True
             if resp in ("n", "no", ""):
-                cprint("Aborted.", Text.WARNING, force=True)
+                cprint("Aborted.", Text.WARNING)
                 return False
-            cprint("Please answer with 'y' or 'n'.", Text.INFO, force=True)
+            cprint("Please answer with 'y' or 'n'.", Text.INFO)
 
-        cprint("Too many invalid responses. Aborted.", Text.WARNING, force=True)
+        cprint("Too many invalid responses. Aborted.", Text.WARNING)
         return False
