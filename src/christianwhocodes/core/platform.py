@@ -16,13 +16,13 @@ class Platform:
 
     """
 
-    PLATFORM_MAP: Final[dict[str, str]] = {
+    _PLATFORM_MAP: Final[dict[str, str]] = {
         "darwin": "macos",
         "linux": "linux",
         "windows": "windows",
     }
 
-    ARCH_MAP: Final[dict[str, str]] = {
+    _ARCH_MAP: Final[dict[str, str]] = {
         "x86_64": "x64",
         "amd64": "x64",
         "x64": "x64",
@@ -47,12 +47,12 @@ class Platform:
 
         """
         system_platform = system().lower()
-        platform_name = self.PLATFORM_MAP.get(system_platform)
+        platform_name = self._PLATFORM_MAP.get(system_platform)
 
         if not platform_name:
             raise OSError(
                 f"Unsupported operating system: {system_platform}. "
-                f"Supported: {', '.join(self.PLATFORM_MAP.values())}"
+                f"Supported: {', '.join(self._PLATFORM_MAP.values())}"
             )
 
         return platform_name
@@ -68,12 +68,12 @@ class Platform:
 
         """
         machine_platform = machine().lower()
-        architecture = self.ARCH_MAP.get(machine_platform)
+        architecture = self._ARCH_MAP.get(machine_platform)
 
         if not architecture:
             raise ValueError(
                 f"Unsupported architecture: {machine_platform}. "
-                f"Supported: {', '.join(set(self.ARCH_MAP.values()))}"
+                f"Supported: {', '.join(set(self._ARCH_MAP.values()))}"
             )
 
         return architecture
