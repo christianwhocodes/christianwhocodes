@@ -21,16 +21,14 @@ class TestVersion:
         assert Version.placeholder() == "X.Y.Z"
 
     def test_get_known_package(self) -> None:
-        """Looking up an installed package should return a real version
-        and an empty error string."""
+        """Looking up an installed package should return a real version and an empty error string."""
         result = Version.get("christianwhocodes")
         assert isinstance(result, VersionResult)
         assert result.version != Version.placeholder()
         assert result.error == ""
 
     def test_get_unknown_package(self) -> None:
-        """Looking up a non-existent package should return the placeholder
-        version and a non-empty error message."""
+        """Looking up a non-existent package should return the placeholder version and a non-empty error message."""
         result = Version.get("definitely-not-a-real-package-xyz")
         assert result.version == Version.placeholder()
         assert result.error != ""

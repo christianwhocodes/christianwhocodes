@@ -8,7 +8,7 @@ from ..io.console import Text, print, status
 
 
 class FileGenerator(ABC):
-    """Abstract base class for generating configuration files.
+    r"""Abstract base class for generating configuration files.
 
     Provides a template method pattern for file generation with optional
     overwrite confirmation. Subclasses must implement file_path and data
@@ -23,6 +23,7 @@ class FileGenerator(ABC):
             @property
             def data(self) -> str:
                 return "# My configuration\\nkey=value\\n"
+
     """
 
     @property
@@ -51,6 +52,7 @@ class FileGenerator(ABC):
 
         Returns:
             True if file should be written, False if operation should be aborted.
+
         """
         if (
             self.file_path.exists()
@@ -91,6 +93,7 @@ class FileGenerator(ABC):
 
         Returns:
             True if the file was written, False if the operation was aborted.
+
         """
         if not self._confirm_overwrite_if_file_exists(force):
             return False  # Abort
@@ -114,6 +117,7 @@ class FileGeneratorOption(StrEnum):
         PG_SERVICE: PostgreSQL service configuration file (.pg_service.conf).
         PGPASS: PostgreSQL password file (pgpass.conf or .pgpass).
         SSH_CONFIG: SSH configuration file (~/.ssh/config).
+
     """
 
     PG_SERVICE = "pg_service"

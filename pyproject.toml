@@ -26,6 +26,13 @@ dependencies = ["pyperclip>=1.11.0", "rich>=14.3.3"]
 [dependency-groups]
 dev = ["ruff>=0.15.2", "pytest>=9.0.2"]
 
+[tool.ruff]
+line-length = 101
+
+[tool.ruff.lint]
+select = ["D"]
+ignore = ["D203", "D213"] # Resolve the conflicts
+
 [[tool.uv.index]]
 name = "testpypi"
 url = "https://test.pypi.org/simple/"

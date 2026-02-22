@@ -24,6 +24,7 @@ def handle_file_generation(args: Namespace) -> ExitCode:
 
         File written to /home/user/.pgpass
         Permissions set to 600 for /home/user/.pgpass
+
     """
     from ..generators.base import FileGenerator, FileGeneratorOption
     from ..generators.configs import (

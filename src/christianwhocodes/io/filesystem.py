@@ -28,6 +28,7 @@ class Copier(ABC):
 
         Returns:
             True if the copy operation was successful, False otherwise.
+
         """
         pass
 
@@ -39,6 +40,7 @@ class Copier(ABC):
 
         Returns:
             True if source exists and is valid, False otherwise.
+
         """
         if not source.exists():
             print(f"Source path does not exist: {source}", Text.ERROR, force=True)
@@ -56,6 +58,7 @@ class FileCopier(Copier):
         >>> copier = FileCopier()
         >>> copier.copy(Path("source.txt"), Path("dest/source.txt"))
         True
+
     """
 
     def copy(self, source: Path, destination: Path) -> bool:
@@ -70,6 +73,7 @@ class FileCopier(Copier):
 
         Returns:
             True if the file was copied successfully, False otherwise.
+
         """
         if not self._validate_source(source):
             return False
@@ -99,9 +103,7 @@ class FileCopier(Copier):
             )
             return False
         except Exception as e:
-            print(
-                f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR, force=True
-            )
+            print(f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR, force=True)
             return False
 
 
@@ -116,6 +118,7 @@ class DirectoryCopier(Copier):
         >>> copier = DirectoryCopier()
         >>> copier.copy(Path("source_dir/"), Path("dest_dir/"))
         True
+
     """
 
     def copy(self, source: Path, destination: Path) -> bool:
@@ -131,6 +134,7 @@ class DirectoryCopier(Copier):
 
         Returns:
             True if the directory was copied successfully, False otherwise.
+
         """
         if not self._validate_source(source):
             return False
@@ -180,6 +184,7 @@ class DirectoryCopier(Copier):
 
         Returns:
             True if the user enters 'y' or 'Y', False otherwise (defaults to no).
+
         """
         print(f"\n{destination} already exists.", Text.WARNING, force=True)
         response = input("Overwrite? [y/N]: ").strip().lower()
@@ -204,6 +209,7 @@ def copy_path(source: PathLike, destination: PathLike) -> bool:
         True
         >>> copy_path("./src/", "./backup/src/")
         True
+
     """
     from ..core.converters import TypeConverter
 

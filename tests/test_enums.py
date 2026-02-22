@@ -20,7 +20,6 @@ class TestExitCode:
         assert ExitCode.ERROR == 1
 
     def test_is_int(self) -> None:
-        """ExitCode members are ints (IntEnum), so they can be passed directly
-        to sys.exit() without conversion."""
+        """ExitCode members are ints (IntEnum), so they can be passed directly to sys.exit() without conversion."""
         assert isinstance(ExitCode.SUCCESS, int)
         assert isinstance(ExitCode.ERROR, int)

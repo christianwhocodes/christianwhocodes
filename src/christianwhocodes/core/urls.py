@@ -1,9 +1,7 @@
 """URL manipulation and normalization utilities."""
 
 
-def normalize_url_path(
-    url: str, leading_slash: bool = False, trailing_slash: bool = True
-) -> str:
+def normalize_url_path(url: str, leading_slash: bool = False, trailing_slash: bool = True) -> str:
     """Normalize URL format by ensuring consistent slash usage.
 
     Args:
@@ -19,6 +17,7 @@ def normalize_url_path(
         'api/users/'
         >>> normalize_url_path("//api//users//", leading_slash=True, trailing_slash=False)
         '/api/users'
+
     """
     if not url:
         return "/"

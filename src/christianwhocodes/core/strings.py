@@ -26,6 +26,7 @@ def generate_random_string(
     Example:
         >>> generate_random_string(16)
         'aB3dEf7gHi9jKl2m'
+
     """
     if length <= 0:
         raise ValueError("length must be positive")
@@ -52,6 +53,7 @@ def max_length_from_choices(choices: Iterable[tuple[str, Any]]) -> int:
         16
         >>> max_length_from_choices([])
         0
+
     """
     return max((len(choice[0]) for choice in choices), default=0)
 

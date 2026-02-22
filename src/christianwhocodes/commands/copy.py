@@ -22,6 +22,7 @@ def handle_copy_operation(args: Namespace) -> ExitCode:
     Example:
         $ christianwhocodes copy -i ./src -o ./backup/src
         Directory copied successfully from ./src to ./backup/src
+
     """
     from ..io.filesystem import copy_path
 

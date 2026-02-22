@@ -1,7 +1,7 @@
 """Platform and architecture detection utilities."""
 
 from platform import machine, system
-from typing import ClassVar
+from typing import Final
 
 
 class Platform:
@@ -13,15 +13,16 @@ class Platform:
     Attributes:
         os_name: Normalized operating system name (macos, linux, windows).
         architecture: Normalized CPU architecture (x64, arm64).
+
     """
 
-    PLATFORM_MAP: ClassVar[dict[str, str]] = {
+    PLATFORM_MAP: Final[dict[str, str]] = {
         "darwin": "macos",
         "linux": "linux",
         "windows": "windows",
     }
 
-    ARCH_MAP: ClassVar[dict[str, str]] = {
+    ARCH_MAP: Final[dict[str, str]] = {
         "x86_64": "x64",
         "amd64": "x64",
         "x64": "x64",
@@ -43,6 +44,7 @@ class Platform:
 
         Raises:
             OSError: If the operating system is not supported.
+
         """
         system_platform = system().lower()
         platform_name = self.PLATFORM_MAP.get(system_platform)
@@ -63,6 +65,7 @@ class Platform:
 
         Raises:
             ValueError: If the architecture is not supported.
+
         """
         machine_platform = machine().lower()
         architecture = self.ARCH_MAP.get(machine_platform)
@@ -76,7 +79,15 @@ class Platform:
         return architecture
 
     def __str__(self) -> str:
-        """Return string representation in format 'os-architecture'."""
+        """Return string representation in format 'os-architecture'.
+
+        Useful anywhere a single token identifies the target platform, such as
+        constructing download URLs or naming build artifacts::
+
+            >>> p = Platform()
+            >>> f"https://example.com/app-{p}.zip"
+            'https://example.com/app-windows-x64.zip'
+        """
         return f"{self.os_name}-{self.architecture}"
 
     def __repr__(self) -> str:

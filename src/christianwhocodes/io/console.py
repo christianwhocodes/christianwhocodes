@@ -23,6 +23,7 @@ class Text(StrEnum):
         INFO: Bold cyan styling for informational messages.
         DEBUG: Bold magenta styling for debug messages.
         HIGHLIGHT: Bold blue styling for highlighted text.
+
     """
 
     ERROR = "error"
@@ -57,6 +58,7 @@ def set_quiet_mode(quiet: bool) -> None:
 
     Args:
         quiet: If True, suppress non-essential output.
+
     """
     global _quiet_mode
     _quiet_mode = quiet
@@ -67,6 +69,7 @@ def is_quiet() -> bool:
 
     Returns:
         True if quiet mode is enabled, False otherwise.
+
     """
     return _quiet_mode
 
@@ -101,6 +104,7 @@ def print(
             ("Error: ", Text.ERROR),
             ("File not found", Text.WARNING)
         ])
+
     """
     # Skip non-essential output in quiet mode
     if _quiet_mode and not force:
@@ -112,8 +116,7 @@ def print(
         # segment carries an essential style — otherwise suppress.
         if isinstance(text, list):
             has_essential = any(
-                segment_color
-                in (Text.SUCCESS, Text.ERROR, Text.WARNING, Text.HIGHLIGHT)
+                segment_color in (Text.SUCCESS, Text.ERROR, Text.WARNING, Text.HIGHLIGHT)
                 for _, segment_color in text
             )
             if not has_essential:
@@ -155,6 +158,7 @@ def status(message: str, spinner: str = "dots") -> Generator[None, None, None]:
         with status("Copying files..."):
             # Perform long operation
             copy_files()
+
     """
     if _quiet_mode:
         # In quiet mode, just execute without showing spinner
@@ -179,6 +183,7 @@ def progress_bar() -> Generator[Progress, None, None]:
             task = progress.add_task("Processing...", total=100)
             for i in range(100):
                 progress.update(task, advance=1)
+
     """
     with Progress(
         SpinnerColumn(),

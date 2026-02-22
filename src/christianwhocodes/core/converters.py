@@ -19,15 +19,14 @@ class TypeConverter:
 
         Note:
             Truthy strings: 'true', '1', 'yes', 'on' (case-insensitive).
+
         """
         if isinstance(value, bool):
             return value
         return value.lower() in ("true", "1", "yes", "on")
 
     @staticmethod
-    def to_list_of_str(
-        value: Any, transform: Callable[[str], str] | None = None
-    ) -> list[str]:
+    def to_list_of_str(value: Any, transform: Callable[[str], str] | None = None) -> list[str]:
         """Convert a value into a list of strings.
 
         Args:
@@ -42,6 +41,7 @@ class TypeConverter:
             ['a', 'b', 'c']
             >>> TypeConverter.to_list_of_str("A,B,C", str.lower)
             ['a', 'b', 'c']
+
         """
         result: list[str] = []
 
@@ -81,6 +81,7 @@ class TypeConverter:
             PosixPath('/home/user/file.txt')
             >>> TypeConverter.to_path("./relative/path", resolve=False)
             PosixPath('relative/path')
+
         """
         from os.path import expandvars
 

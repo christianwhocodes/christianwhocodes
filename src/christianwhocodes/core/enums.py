@@ -9,6 +9,7 @@ class ExitCode(IntEnum):
     Attributes:
         SUCCESS: Operation completed successfully (0).
         ERROR: Operation failed with an error (1).
+
     """
 
     SUCCESS = 0

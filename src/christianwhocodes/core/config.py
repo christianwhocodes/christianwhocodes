@@ -22,6 +22,7 @@ class PyProject:
         '1.0.0'
         >>> py.dependencies
         ['requests>=2.28.0', 'rich>=13.0.0']
+
     """
 
     def __init__(self, toml_path: Path) -> None:
@@ -34,6 +35,7 @@ class PyProject:
             FileNotFoundError: If the file does not exist.
             tomllib.TOMLDecodeError: If the file is invalid TOML.
             KeyError: If the [project] section is missing.
+
         """
         from tomllib import load
 
@@ -57,6 +59,7 @@ class PyProject:
 
         Raises:
             KeyError: If the name field is missing.
+
         """
         return self._data["project"]["name"]
 
@@ -66,6 +69,7 @@ class PyProject:
 
         Raises:
             KeyError: If the version field is missing.
+
         """
         return self._data["project"]["version"]
 

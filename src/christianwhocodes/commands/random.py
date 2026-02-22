@@ -23,6 +23,7 @@ def handle_random_string(args: Namespace) -> ExitCode:
         $ christianwhocodes random -l 16
         Generated: aB3dEf7gHi9jKl2m
         Copied to clipboard!
+
     """
     from ..core.strings import generate_random_string
     from ..io.console import Text, print, status

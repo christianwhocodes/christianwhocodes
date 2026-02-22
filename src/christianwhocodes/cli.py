@@ -29,6 +29,7 @@ def configure_random_parser(subparsers: Any) -> None:
 
     Args:
         subparsers: The subparsers action object to add the random parser to.
+
     """
     random_parser = subparsers.add_parser(
         "random",
@@ -55,6 +56,7 @@ def configure_generate_parser(subparsers: Any) -> None:
 
     Args:
         subparsers: The subparsers action object to add the generate parser to.
+
     """
     file_types = ", ".join(opt.value for opt in FileGeneratorOption)
     generate_parser = subparsers.add_parser(
@@ -82,6 +84,7 @@ def configure_copy_parser(subparsers: Any) -> None:
 
     Args:
         subparsers: The subparsers action object to add the copy parser to.
+
     """
     copy_parser = subparsers.add_parser(
         "copy",
@@ -112,6 +115,7 @@ def create_parser() -> ArgumentParser:
 
     Returns:
         Configured argument parser ready to parse arguments.
+
     """
     parser = ArgumentParser(
         prog="christianwhocodes",
@@ -180,6 +184,7 @@ def handle_default(args: Namespace) -> ExitCode:
 
     Returns:
         ExitCode.SUCCESS after displaying the message.
+
     """
     print(
         "...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32"
@@ -195,6 +200,7 @@ def dispatch_command(args: Namespace) -> ExitCode:
 
     Returns:
         ExitCode from the command handler, or default handler if no command.
+
     """
     # Handle platform flag (takes precedence over subcommands)
     if args.platform:
@@ -212,7 +218,7 @@ def dispatch_command(args: Namespace) -> ExitCode:
 
 
 def main() -> NoReturn:
-    """Main entry point for the CLI application.
+    """Run the CLI application.
 
     Parses command-line arguments, dispatches to the appropriate handler,
     and exits with the returned exit code.

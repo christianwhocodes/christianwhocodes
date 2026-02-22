@@ -21,6 +21,7 @@ def handle_platform_info(args: Namespace) -> ExitCode:
         Platform: windows
         Architecture: x64
         Full: windows-x64
+
     """
     from ..core.platform import Platform
     from ..io.console import Text, print

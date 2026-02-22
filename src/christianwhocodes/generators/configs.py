@@ -17,38 +17,35 @@ class PgConfigFilesEnum(StrEnum):
 
 
 class PgServiceFileGenerator(FileGenerator):
-    f"""Generator for PostgreSQL service configuration file.
+    """Generator for PostgreSQL service configuration file.
 
-    Creates a {PgConfigFilesEnum.PG_SERVICE.value} file in the appropriate location based on the OS:
+    Creates a pg_service.conf file in the appropriate location based on the OS:
 
-    - **Windows**: ``%APPDATA%/postgresql/{PgConfigFilesEnum.PG_SERVICE.value}``
-    - **Unix/Linux/macOS**: ``~/{PgConfigFilesEnum.PG_SERVICE.value}``
+    - **Windows**: ``%APPDATA%/postgresql/.pg_service.conf``
+    - **Unix/Linux/macOS**: ``~/.pg_service.conf``
 
-    The {PgConfigFilesEnum.PG_SERVICE.value} file allows referencing named connection profiles
+    The .pg_service.conf file allows referencing named connection profiles
     (e.g. ``service=mydb``) instead of repeating host/port/dbname/user in
     every connection string.
 
     Example:
         >>> generator = PgServiceFileGenerator()
         >>> generator.create()
+
     """
 
     @property
     def file_path(self) -> Path:
-        f"""Return the platform-specific path for the {PgConfigFilesEnum.PG_SERVICE.value} file."""
+        """Return the platform-specific path for the .pg_service.conf file."""
         match system():
             case "Windows":
-                return (
-                    Path(environ["APPDATA"])
-                    / "postgresql"
-                    / PgConfigFilesEnum.PG_SERVICE.value
-                )
+                return Path(environ["APPDATA"]) / "postgresql" / PgConfigFilesEnum.PG_SERVICE.value
             case _:
                 return Path(f"~/{PgConfigFilesEnum.PG_SERVICE.value}").expanduser()
 
     @property
     def data(self) -> str:
-        f"""Return template content for {PgConfigFilesEnum.PG_SERVICE.value} file."""
+        """Return template content for the .pg_service.conf file."""
         return (
             f"# Read more about {PgConfigFilesEnum.PG_SERVICE.value} file: https://www.postgresql.org/docs/current/libpq-pgservice.html \n\n"
             "# comment\n"
@@ -75,6 +72,7 @@ class PgPassFileGenerator(FileGenerator):
     Example:
         >>> generator = PgPassFileGenerator()
         >>> generator.create()
+
     """
 
     @property
@@ -82,17 +80,13 @@ class PgPassFileGenerator(FileGenerator):
         """Return the platform-specific path for the .pgpass/pgpass.conf file."""
         match system():
             case "Windows":
-                return (
-                    Path(environ["APPDATA"])
-                    / "postgresql"
-                    / PgConfigFilesEnum.PGPASS.value
-                )
+                return Path(environ["APPDATA"]) / "postgresql" / PgConfigFilesEnum.PGPASS.value
             case _:
                 return Path(f"~/{PgConfigFilesEnum.PGPASS.value}").expanduser()
 
     @property
     def data(self) -> str:
-        f"""Return template content for {PgConfigFilesEnum.PGPASS.value} file."""
+        """Return template content for the .pgpass/pgpass.conf file."""
         return (
             f"# Read more about {PgConfigFilesEnum.PGPASS.value} file: https://www.postgresql.org/docs/current/libpq-pgpass.html \n\n"
             "# This file should contain lines of the following format:\n"
@@ -111,6 +105,7 @@ class PgPassFileGenerator(FileGenerator):
         Note:
             On Unix-like systems, this method sets file permissions to 600
             (owner read/write only) as required by PostgreSQL for security.
+
         """
         from stat import S_IRUSR, S_IWUSR
 
@@ -144,6 +139,7 @@ class SSHConfigFileGenerator(FileGenerator):
         >>> generator = SSHConfigFileGenerator()
         >>> generator.create()
         File written to /home/user/.ssh/config
+
     """
 
     @property
@@ -153,7 +149,7 @@ class SSHConfigFileGenerator(FileGenerator):
 
     @property
     def data(self) -> str:
-        """Return template content for SSH config file."""
+        """Return template content for the SSH config file."""
         return (
             "# Read more about SSH config files: https://linux.die.net/man/5/ssh_config\n"
             "# ssh -i 'path/to/key' user@domain_or_ip\n\n"

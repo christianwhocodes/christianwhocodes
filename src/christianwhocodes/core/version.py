@@ -11,6 +11,7 @@ class VersionResult(NamedTuple):
     Attributes:
         version: The version string, or a placeholder if lookup failed.
         error: Empty string on success, error details on failure.
+
     """
 
     version: str
@@ -26,6 +27,7 @@ class Version:
 
         Returns:
             The literal placeholder version string "X.Y.Z".
+
         """
         return "X.Y.Z"
 
@@ -40,6 +42,7 @@ class Version:
             VersionResult with version string and error message.
             If successful, error is empty.
             If failed, version is the placeholder and error contains details.
+
         """
         try:
             from importlib.metadata import version
@@ -65,6 +68,7 @@ def print_version(package: str) -> ExitCode:
         >>> print_version("christianwhocodes")
         1.2.7
         ExitCode.SUCCESS
+
     """
     # Import here to avoid circular dependency
     from ..io import print

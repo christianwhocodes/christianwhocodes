@@ -28,6 +28,7 @@ def is_prime(n: int) -> bool:
         True
         >>> is_prime(1)
         False
+
     """
     if n < 0:
         raise ValueError("n must be non-negative")
@@ -77,6 +78,7 @@ def is_factorial(n: int) -> tuple[bool, int | None]:
         (True, 0)
         >>> is_factorial(6)
         (True, 3)
+
     """
     if n < 0:
         raise ValueError("n must be non-negative")
@@ -116,6 +118,7 @@ def gcd(a: int, b: int) -> int:
         50
         >>> gcd(17, 19)
         1
+
     """
     return math.gcd(a, b)
 
@@ -138,6 +141,7 @@ def lcm(a: int, b: int) -> int:
         36
         >>> lcm(5, 7)
         35
+
     """
     return math.lcm(a, b)
 
@@ -168,6 +172,7 @@ def fibonacci(n: int) -> int:
         55
         >>> fibonacci(20)
         6765
+
     """
     if n < 0:
         raise ValueError("n must be non-negative")
@@ -199,6 +204,7 @@ def fibonacci_sequence(n: int) -> Generator[int, None, None]:
         []
         >>> list(fibonacci_sequence(3))
         [0, 1, 1]
+
     """
     if n < 0:
         raise ValueError("n must be non-negative")
@@ -237,6 +243,7 @@ def is_perfect_square(n: int) -> bool:
         False
         >>> is_perfect_square(0)
         True
+
     """
     if n < 0:
         raise ValueError("n must be non-negative")
@@ -258,6 +265,7 @@ def is_even(n: int) -> bool:
         True
         >>> is_even(7)
         False
+
     """
     return n % 2 == 0
 
@@ -276,6 +284,7 @@ def is_odd(n: int) -> bool:
         False
         >>> is_odd(7)
         True
+
     """
     return n % 2 != 0
 
@@ -299,6 +308,7 @@ def is_power_of_two(n: int) -> bool:
         False
         >>> is_power_of_two(1)
         True
+
     """
     if n < 0:
         raise ValueError("n must be non-negative")

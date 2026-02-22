@@ -45,8 +45,7 @@ class TestPlatform:
         assert a == b
 
     def test_inequality_with_other_type(self) -> None:
-        """Comparing Platform to a non-Platform should return NotImplemented
-        (which Python interprets as not equal)."""
+        """Comparing Platform to a non-Platform should return NotImplemented (which Python interprets as not equal)."""
         p = Platform()
         assert p != "not a platform"
 

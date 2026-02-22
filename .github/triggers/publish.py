@@ -1,4 +1,4 @@
-"""Trigger the 'Publish to PyPI' GitHub Actions workflow by tagging and pushing.
+"""Trigger the 'Publish to PyPI or TestPyPI on tag push or manual trigger' GitHub workflow by tagging and pushing.
 
 This script:
 - Reads repository metadata from pyproject.toml to build the Actions URL.
@@ -10,30 +10,23 @@ This script:
 Run with --dry or --dry-run to preview the git commands without executing them.
 """
 
-from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
-from pathlib import Path
 from subprocess import CalledProcessError, run
-from sys import exit
-from tomllib import TOMLDecodeError
-from typing import NoReturn
-from urllib.parse import urlparse
 
-from christianwhocodes.core import ExitCode, PyProject
-from christianwhocodes.io import Text, print
+from christianwhocodes import ExitCode, PyProject, Text, print
 
 
 class GitPublisher:
-    """Encapsulate git tagging and pushing"""
+    """Encapsulate git tagging and pushing."""
 
     def __init__(self, pyproject: PyProject) -> None:
+        """Initialize GitPublisher with project metadata."""
         self.project = pyproject
 
     # ---------------------------------------------------------
     #   REPO URL EXTRACTION
     # ---------------------------------------------------------
     def _get_repo_url(self) -> str:
-        """
-        Return repository URL from pyproject.toml (raises KeyError if missing).
+        """Return repository URL from pyproject.toml (raises KeyError if missing).
 
         Supports:
         - https://github.com/user/repo
@@ -49,15 +42,14 @@ class GitPublisher:
         return url
 
     def _normalize_repo_url(self, raw: str) -> str:
-        """
-        Normalize Git remote URL into a uniform `https://github.com/user/repo`
-        format so we can build an Actions URL.
+        """Normalize Git remote URL into a uniform `https://github.com/user/repo` format.
 
         Handles:
         - git@github.com:user/repo.git
         - https://github.com/user/repo
         - https://github.com/user/repo.git
         """
+        from urllib.parse import urlparse
 
         raw = raw.strip()
 
@@ -77,10 +69,9 @@ class GitPublisher:
         raise ValueError("Repository URL is not a GitHub URL")
 
     def build_actions_url(self) -> str:
-        """
-        Build the GitHub Actions URL:
+        """Build the GitHub Actions URL.
 
-          https://github.com/user/repo/actions
+        https://github.com/user/repo/actions
         """
         repo_url = self._get_repo_url()
         norm = self._normalize_repo_url(repo_url)
@@ -114,13 +105,16 @@ class GitPublisher:
 #   MAIN FLOW
 # =========================================================
 def tag_and_push(dry_run: bool = False) -> ExitCode:
+    """Create git tag and push to trigger publishing workflow."""
+    from tomllib import TOMLDecodeError
+
     if dry_run:
         print("DRY RUN MODE - no changes will be made\n", Text.INFO)
 
     try:
-        pyproject = PyProject(
-            Path(__file__).resolve().parent.parent.parent / "pyproject.toml"
-        )
+        from pathlib import Path
+
+        pyproject = PyProject(Path(__file__).parent.parent.parent.resolve() / "pyproject.toml")
 
         version = pyproject.version
 
@@ -168,7 +162,11 @@ def tag_and_push(dry_run: bool = False) -> ExitCode:
         return ExitCode.SUCCESS
 
 
-def main() -> NoReturn:
+def main() -> None:
+    """Parse command-line arguments and execute tag and push operation."""
+    from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
+    from sys import exit
+
     parser = ArgumentParser(
         description="Create and push git tag to trigger publishing workflow",
         formatter_class=RawDescriptionHelpFormatter,

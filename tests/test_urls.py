@@ -14,10 +14,12 @@ from christianwhocodes.core.urls import normalize_url_path
 class TestNormalizeUrlPath:
     """Tests for the normalize_url_path() function.
 
-    Parameters:
+    Parameters
+    ----------
         url: The raw URL path string.
         leading_slash: Whether to enforce a leading ``/`` (default: False).
         trailing_slash: Whether to enforce a trailing ``/`` (default: True).
+
     """
 
     def test_default_trailing_slash(self) -> None:
@@ -44,9 +46,7 @@ class TestNormalizeUrlPath:
 
     def test_collapses_multiple_slashes(self) -> None:
         """Consecutive slashes like '//api//users//' are collapsed to single slashes."""
-        result = normalize_url_path(
-            "//api//users//", leading_slash=True, trailing_slash=False
-        )
+        result = normalize_url_path("//api//users//", leading_slash=True, trailing_slash=False)
         assert result == "/api/users"
 
     def test_empty_string(self) -> None:
@@ -54,13 +54,11 @@ class TestNormalizeUrlPath:
         assert normalize_url_path("") == "/"
 
     def test_single_slash_no_trailing(self) -> None:
-        """Edge case: '/' with trailing_slash=False should still return '/'
-        (never return an empty string)."""
+        """Edge case: '/' with trailing_slash=False should still return '/' (never return an empty string)."""
         result = normalize_url_path("/", leading_slash=True, trailing_slash=False)
         assert result == "/"
 
     def test_single_slash_no_leading(self) -> None:
-        """Edge case: '/' with both False should still return '/'
-        (never return an empty string)."""
+        """Edge case: '/' with both False should still return '/' (never return an empty string)."""
         result = normalize_url_path("/", leading_slash=False, trailing_slash=False)
         assert result == "/"
