@@ -26,7 +26,7 @@ def handle_file_generation(args: Namespace) -> ExitCode:
         Permissions set to 600 for /home/user/.pgpass
 
     """
-    from ..generators.base import FileGenerator, FileGeneratorOption
+    from ..generators.file import FileGenerator, FileGeneratorOption
     from ..generators.configs import (
         PgPassFileGenerator,
         PgServiceFileGenerator,
