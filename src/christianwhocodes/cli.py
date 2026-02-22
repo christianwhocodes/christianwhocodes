@@ -3,7 +3,11 @@
 from argparse import ArgumentParser, Namespace
 from sys import exit
 
-from christianwhocodes.commands import handle_copy_operation, handle_random_string
+from christianwhocodes.commands import (
+    handle_copy_operation,
+    handle_platform_display,
+    handle_random_string,
+)
 from christianwhocodes.core import ExitCode, Text, Version, cprint
 
 
@@ -20,6 +24,9 @@ def main() -> None:
     # 1. Global Metadata
     parser.add_argument(
         "-v", "--version", action="version", version=Version.get("christianwhocodes")[0]
+    )
+    parser.add_argument(
+        "-p", "--platform", action="store_true", default=False, help="Display platform information"
     )
     parser.set_defaults(func=handle_default)  # Default if no subcommand
 
@@ -56,8 +63,10 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        # No dictionary needed. Just call the function attached to the args.
-        exit_code = args.func(args)
+        if args.platform:
+            exit_code = handle_platform_display(args)
+        else:
+            exit_code = args.func(args)
     except KeyboardInterrupt:
         cprint("\nOperation cancelled.", Text.WARNING, force=True)
         exit_code = ExitCode.ERROR
