@@ -3,8 +3,8 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from ..core import Platform
 from ..io import Text, cprint, status
+from ..utils import Platform
 
 __all__: list[str] = [
     "FileSpec",
@@ -34,7 +34,7 @@ def _pg_base_path() -> Path:
 
 
 def get_pg_service_spec() -> FileSpec:
-    """Return the ConfigSpec for a PostgreSQL service connection file."""
+    """Return the FileSpec for a PostgreSQL service connection file (~/.pg_service.conf)."""
     content = (
         "# Read more: https://www.postgresql.org/docs/current/libpq-pgservice.html\n\n"
         "[mydb]\n"
@@ -47,7 +47,7 @@ def get_pg_service_spec() -> FileSpec:
 
 
 def get_pgpass_spec() -> FileSpec:
-    """Return the ConfigSpec for a PostgreSQL password file."""
+    """Return the FileSpec for a PostgreSQL password file (~/.pgpass or pgpass.conf on Windows)."""
     from stat import S_IRUSR, S_IWUSR
 
     is_win = Platform().os_name == "windows"
@@ -61,7 +61,7 @@ def get_pgpass_spec() -> FileSpec:
 
 
 def get_ssh_config_spec() -> FileSpec:
-    """Return the ConfigSpec for an SSH client configuration file."""
+    """Return the FileSpec for an SSH client configuration file (~/.ssh/config)."""
     content = (
         "# Read more: https://linux.die.net/man/5/ssh_config\n\n"
         "Host my_host_alias\n"
@@ -80,7 +80,15 @@ class FileGenerator:
         self.spec = spec
 
     def create(self, overwrite: bool = False) -> bool:
-        """Write the file to disk."""
+        """Write the file to disk, applying permissions if specified.
+
+        Args:
+            overwrite: If True, skip confirmation and overwrite existing files.
+
+        Returns:
+            True if the file was written successfully, False if aborted.
+
+        """
         if not self._should_overwrite(overwrite):
             return False
 
@@ -103,7 +111,12 @@ class FileGenerator:
         return True
 
     def _should_overwrite(self, overwrite: bool) -> bool:
-        """Isolated CLI logic for overwrite confirmation."""
+        """Determine whether to proceed, prompting the user if the file already exists.
+
+        Returns:
+            True to proceed with writing, False to abort.
+
+        """
         if not self.spec.path.exists() or self.spec.path.stat().st_size == 0 or overwrite:
             # File doesn't exist, is empty, or overwrite is forced - no confirmation needed.
             return True

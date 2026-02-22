@@ -1,10 +1,5 @@
-"""Core utilities and types for the christianwhocodes package."""
+"""Core library: generators, I/O utilities, and shared types."""
 
-from .config import *
-from .converters import *
-from .enums import *
-from .math import *
-from .platform import *
-from .strings import *
-from .urls import *
-from .version import *
+from .generators import *
+from .io import *
+from .utils import *

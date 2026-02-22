@@ -16,7 +16,7 @@ from christianwhocodes import ExitCode, PyProject, Text, print
 
 
 class GitPublisher:
-    """Encapsulate git tagging and pushing."""
+    """Handles git tagging and pushing to trigger release workflows."""
 
     def __init__(self, pyproject: PyProject) -> None:
         """Initialize GitPublisher with project metadata."""

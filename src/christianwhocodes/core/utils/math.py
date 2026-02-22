@@ -3,6 +3,19 @@
 import math
 from collections.abc import Generator
 
+__all__: list[str] = [
+    "is_prime",
+    "is_factorial",
+    "gcd",
+    "lcm",
+    "fibonacci",
+    "fibonacci_sequence",
+    "is_perfect_square",
+    "is_even",
+    "is_odd",
+    "is_power_of_two",
+]
+
 
 def is_prime(n: int) -> bool:
     """Check if a number is prime.
@@ -313,17 +326,3 @@ def is_power_of_two(n: int) -> bool:
     if n < 0:
         raise ValueError("n must be non-negative")
     return n > 0 and (n & (n - 1)) == 0
-
-
-__all__: list[str] = [
-    "is_prime",
-    "is_factorial",
-    "gcd",
-    "lcm",
-    "fibonacci",
-    "fibonacci_sequence",
-    "is_perfect_square",
-    "is_even",
-    "is_odd",
-    "is_power_of_two",
-]

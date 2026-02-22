@@ -1,6 +1,9 @@
-"""Core enumeration types for the application."""
+"""Core enumeration types."""
 
 from enum import IntEnum
+
+
+__all__: list[str] = ["ExitCode"]
 
 
 class ExitCode(IntEnum):
@@ -14,6 +17,3 @@ class ExitCode(IntEnum):
 
     SUCCESS = 0
     ERROR = 1
-
-
-__all__: list[str] = ["ExitCode"]

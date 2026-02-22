@@ -4,6 +4,9 @@ from platform import machine, system
 from typing import Final
 
 
+__all__: list[str] = ["Platform"]
+
+
 class Platform:
     """Encapsulates platform and architecture information.
 
@@ -151,6 +154,3 @@ class Platform:
             1
         """
         return hash((self.os_name, self.architecture))
-
-
-__all__: list[str] = ["Platform"]

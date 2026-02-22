@@ -5,6 +5,9 @@ from typing import Literal, NamedTuple
 from .enums import ExitCode
 
 
+__all__: list[str] = ["Version", "VersionResult", "print_version"]
+
+
 class VersionResult(NamedTuple):
     """Result of a version lookup.
 
@@ -83,6 +86,3 @@ def print_version(package: str) -> ExitCode:
         if error_msg:
             cprint(error_msg)
         return ExitCode.ERROR
-
-
-__all__: list[str] = ["Version", "VersionResult", "print_version"]

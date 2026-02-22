@@ -3,6 +3,8 @@
 from pathlib import Path
 from typing import Any, Callable, cast
 
+__all__: list[str] = ["TypeConverter"]
+
 
 class TypeConverter:
     """Utility class for converting between common data types."""
@@ -105,6 +107,3 @@ class TypeConverter:
             path = path.resolve()
 
         return path
-
-
-__all__: list[str] = ["TypeConverter"]

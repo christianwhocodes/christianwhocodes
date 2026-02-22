@@ -9,6 +9,17 @@ from rich.markup import escape
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.theme import Theme
 
+
+__all__: list[str] = [
+    "Text",
+    "cprint",
+    "status",
+    "progress_bar",
+    "set_quiet_mode",
+    "is_quiet",
+]
+
+
 # Global quiet mode state
 _quiet_mode = False
 
@@ -96,11 +107,11 @@ def cprint(
 
     Examples:
         # Single color
-        print("Error occurred!", Text.ERROR)
-        print("Status: ", Text.INFO, end="")
+        cprint("Error occurred!", Text.ERROR)
+        cprint("Status: ", Text.INFO, end="")
 
         # Multi-colored text in one line
-        print([
+        cprint([
             ("Error: ", Text.ERROR),
             ("File not found", Text.WARNING)
         ])
@@ -191,13 +202,3 @@ def progress_bar() -> Generator[Progress, None, None]:
         console=_console,
     ) as progress:
         yield progress
-
-
-__all__: list[str] = [
-    "Text",
-    "cprint",
-    "status",
-    "progress_bar",
-    "set_quiet_mode",
-    "is_quiet",
-]

@@ -1,5 +1,7 @@
 """URL manipulation and normalization utilities."""
 
+__all__: list[str] = ["normalize_url_path"]
+
 
 def normalize_url_path(url: str, leading_slash: bool = False, trailing_slash: bool = True) -> str:
     """Normalize URL format by ensuring consistent slash usage.
@@ -47,6 +49,3 @@ def normalize_url_path(url: str, leading_slash: bool = False, trailing_slash: bo
         url = url.rstrip("/")
 
     return url or "/"
-
-
-__all__: list[str] = ["normalize_url_path"]

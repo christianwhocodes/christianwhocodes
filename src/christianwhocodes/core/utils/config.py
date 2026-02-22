@@ -4,6 +4,9 @@ from pathlib import Path
 from typing import Any
 
 
+__all__: list[str] = ["PyProject"]
+
+
 class PyProject:
     """Represents the data from a pyproject.toml file.
 
@@ -106,6 +109,3 @@ class PyProject:
     def path(self) -> Path:
         """Return the path to the pyproject.toml file."""
         return self._toml_path
-
-
-__all__: list[str] = ["PyProject"]

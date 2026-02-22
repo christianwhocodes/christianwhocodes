@@ -7,8 +7,12 @@ from typing import TypeAlias
 
 from .console import Text, cprint, status
 
+
+__all__: list[str] = ["Copier", "FileCopier", "DirectoryCopier", "copy_path"]
+
+
 # Type alias for path-like objects
-PathLike: TypeAlias = str | Path
+_PathLike: TypeAlias = str | Path
 
 
 class Copier(ABC):
@@ -191,7 +195,7 @@ class DirectoryCopier(Copier):
         return response == "y"
 
 
-def copy_path(source: PathLike, destination: PathLike) -> bool:
+def copy_path(source: _PathLike, destination: _PathLike) -> bool:
     """Copy files or directories from one location to another.
 
     Automatically detects whether the source is a file or directory
@@ -211,7 +215,7 @@ def copy_path(source: PathLike, destination: PathLike) -> bool:
         True
 
     """
-    from ..core.converters import TypeConverter
+    from ..utils.converters import TypeConverter
 
     source_path = TypeConverter.to_path(source)
     dest_path = TypeConverter.to_path(destination)
@@ -237,6 +241,3 @@ def copy_path(source: PathLike, destination: PathLike) -> bool:
         return False
 
     return copier.copy(source_path, dest_path)
-
-
-__all__: list[str] = ["Copier", "FileCopier", "DirectoryCopier", "copy_path"]

@@ -1,3 +1,0 @@
-"""Generators."""
-
-from .file import *

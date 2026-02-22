@@ -1,209 +1,67 @@
-"""Christian Who Codes CLI - Command-line interface entry point."""
+"""CLI entry point for the christianwhocodes package."""
 
 from argparse import ArgumentParser, Namespace
-from sys import argv, exit
-from typing import Any, Callable, NoReturn
+from sys import exit
 
-from christianwhocodes.commands import (
-    handle_copy_operation,
-    handle_platform_info,
-    handle_random_string,
-)
-from christianwhocodes.core import ExitCode, Version
-from christianwhocodes.io import Text, cprint, set_quiet_mode
-
-# ============================================================================
-# ARGUMENT PARSER CONFIGURATION
-# ============================================================================
+from christianwhocodes.commands import handle_copy_operation, handle_random_string
+from christianwhocodes.core import ExitCode, Text, Version, cprint
 
 
-def configure_random_parser(subparsers: Any) -> None:
-    """Configure the random string generation subcommand.
+def handle_default(args: Namespace) -> ExitCode:
+    """Handle default command when no subcommand is specified."""
+    cprint("...but the people who know their God shall be strong... — Daniel 11:32")
+    return ExitCode.SUCCESS
 
-    Args:
-        subparsers: The subparsers action object to add the random parser to.
 
-    """
-    random_parser = subparsers.add_parser(
+def main() -> None:
+    """Parse command-line arguments and execute the appropriate handler."""
+    parser = ArgumentParser(prog="christianwhocodes", description="Dev Utilities")
+
+    # 1. Global Metadata
+    parser.add_argument(
+        "-v", "--version", action="version", version=Version.get("christianwhocodes")[0]
+    )
+    parser.set_defaults(func=handle_default)  # Default if no subcommand
+
+    subparsers = parser.add_subparsers(dest="command")
+
+    # 2. Random String Command
+    rand = subparsers.add_parser(
         "random",
-        aliases=["generaterandom", "randomstring"],
-        help="Generate a cryptographically secure random string",
+        aliases=["rand", "randomstring"],
+        help="Random string generator",
     )
-    random_parser.add_argument(
-        "--no-clipboard",
-        action="store_true",
-        help="Don't copy the generated string to clipboard",
-    )
-    random_parser.add_argument(
+    rand.add_argument(
         "-l",
         "--length",
         type=int,
         default=16,
-        metavar="N",
-        help="Length of the random string (default: 16)",
     )
-
-
-def configure_copy_parser(subparsers: Any) -> None:
-    """Configure the copy operation subcommand.
-
-    Args:
-        subparsers: The subparsers action object to add the copy parser to.
-
-    """
-    copy_parser = subparsers.add_parser(
-        "copy",
-        help="Copy files or directories from source to destination",
-    )
-    copy_parser.add_argument(
-        "-i",
-        "--input",
-        "--source",
-        dest="source",
-        required=True,
-        metavar="PATH",
-        help="Source file or directory path",
-    )
-    copy_parser.add_argument(
-        "-o",
-        "--output",
-        "--destination",
-        dest="destination",
-        required=True,
-        metavar="PATH",
-        help="Destination file or directory path",
-    )
-
-
-def create_parser() -> ArgumentParser:
-    """Create and configure the argument parser with all subcommands.
-
-    Returns:
-        Configured argument parser ready to parse arguments.
-
-    """
-    parser = ArgumentParser(
-        prog="christianwhocodes",
-        description="Christian Who Codes CLI Tool - Utilities for developers",
-        epilog="...but the people who know their God shall be strong, and carry out great exploits. — Daniel 11:32",
-    )
-
-    # Global arguments
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version=Version.get("christianwhocodes")[0],
-        help="Show program version and exit",
-    )
-
-    parser.add_argument(
-        "-p",
-        "--platform",
+    rand.add_argument(
+        "--no-clipboard",
+        dest="no_clipboard",
         action="store_true",
-        help="Display platform and architecture information",
+        default=False,
+        help="Skip copying to clipboard",
     )
+    rand.set_defaults(func=handle_random_string)  # Link handler directly
 
-    parser.add_argument(
-        "-q",
-        "--quiet",
-        action="store_true",
-        help="Suppress non-essential output (spinners, info and debug messages)",
-    )
+    # 3. Copy Command
+    copy = subparsers.add_parser("copy", help="Copy files/dirs")
+    copy.add_argument("-i", "--input", "--source", dest="source", required=True)
+    copy.add_argument("-o", "--output", "--destination", dest="destination", required=True)
+    copy.set_defaults(func=handle_copy_operation)  # Link handler directly
 
-    # Create subparsers for commands
-    subparsers = parser.add_subparsers(
-        dest="command",
-        help="Available commands (use <command> -h for command-specific help)",
-    )
-
-    # Configure each subcommand
-    configure_random_parser(subparsers)
-    configure_copy_parser(subparsers)
-
-    return parser
-
-
-# ============================================================================
-# COMMAND ROUTING AND EXECUTION
-# ============================================================================
-
-# Command registry: maps every recognised command name (including aliases)
-# to the handler function that implements it.  Adding a new command just
-# requires a new entry here plus a subparser configuration above.
-COMMAND_HANDLERS: dict[str, Callable[[Namespace], ExitCode]] = {
-    "random": handle_random_string,
-    "generaterandom": handle_random_string,
-    "randomstring": handle_random_string,
-    "copy": handle_copy_operation,
-}
-
-
-def handle_default(args: Namespace) -> ExitCode:
-    """Display default message when no command is specified.
-
-    Args:
-        args: Parsed command-line arguments (unused).
-
-    Returns:
-        ExitCode.SUCCESS after displaying the message.
-
-    """
-    cprint(
-        "...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32"
-    )
-    return ExitCode.SUCCESS
-
-
-def dispatch_command(args: Namespace) -> ExitCode:
-    """Route the command to its appropriate handler function.
-
-    Args:
-        args: Parsed command-line arguments containing the command name.
-
-    Returns:
-        ExitCode from the command handler, or default handler if no command.
-
-    """
-    # Handle platform flag (takes precedence over subcommands)
-    if args.platform:
-        return handle_platform_info(args)
-
-    # Dispatch to registered command handler or default
-    command = args.command
-    handler = COMMAND_HANDLERS.get(command, handle_default)
-    return handler(args)
-
-
-# ============================================================================
-# MAIN ENTRY POINT
-# ============================================================================
-
-
-def main() -> NoReturn:
-    """Run the CLI application.
-
-    Parses command-line arguments, dispatches to the appropriate handler,
-    and exits with the returned exit code.
-
-    This function never returns normally; it always calls sys.exit().
-    """
-    parser = create_parser()
-    args = parser.parse_args(argv[1:])
-
-    # Set quiet mode if requested
-    if args.quiet:
-        set_quiet_mode(True)
+    # --- Execution Logic ---
+    args = parser.parse_args()
 
     try:
-        exit_code = dispatch_command(args)
+        # No dictionary needed. Just call the function attached to the args.
+        exit_code = args.func(args)
     except KeyboardInterrupt:
-        # Ctrl+C during any command — exit cleanly instead of traceback.
-        cprint("\nOperation cancelled by user.", Text.WARNING, force=True)
+        cprint("\nOperation cancelled.", Text.WARNING, force=True)
         exit_code = ExitCode.ERROR
     except Exception as e:
-        # Last-resort safety net — ensures the CLI never dumps a raw
-        # traceback to the user; always exits with a controlled message.
         cprint(f"Error: {e}", Text.ERROR, force=True)
         exit_code = ExitCode.ERROR
 

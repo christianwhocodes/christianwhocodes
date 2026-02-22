@@ -2,7 +2,9 @@
 
 from argparse import Namespace
 
-from ..core.enums import ExitCode
+from ...core import ExitCode, Text, cprint, generate_random_string, status
+
+__all__: list[str] = ["handle_random_string"]
 
 
 def handle_random_string(args: Namespace) -> ExitCode:
@@ -25,9 +27,6 @@ def handle_random_string(args: Namespace) -> ExitCode:
         Copied to clipboard!
 
     """
-    from ..core.strings import generate_random_string
-    from ..io.console import Text, cprint, status
-
     with status("Generating secure random string..."):
         random_str = generate_random_string(length=args.length)
 
@@ -48,6 +47,3 @@ def handle_random_string(args: Namespace) -> ExitCode:
             cprint(f"Could not copy to clipboard: {e}", Text.WARNING, force=True)
 
     return ExitCode.SUCCESS
-
-
-__all__: list[str] = ["handle_random_string"]
