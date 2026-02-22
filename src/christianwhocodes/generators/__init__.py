@@ -1,3 +1,3 @@
-"""File generation utilities for developer configuration files."""
+"""Generators."""
 
 from .file import *

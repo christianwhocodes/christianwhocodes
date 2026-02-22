@@ -1,9 +1,4 @@
-"""Christian Who Codes CLI - Command-line interface entry point.
-
-This module provides the main entry point for the CLI tool, including
-argument parser configuration and command routing. Command implementations
-are organized in the commands/ package for maintainability.
-"""
+"""Christian Who Codes CLI - Command-line interface entry point."""
 
 from argparse import ArgumentParser, Namespace
 from sys import argv, exit
@@ -11,13 +6,11 @@ from typing import Any, Callable, NoReturn
 
 from christianwhocodes.commands import (
     handle_copy_operation,
-    handle_file_generation,
     handle_platform_info,
     handle_random_string,
 )
 from christianwhocodes.core import ExitCode, Version
-from christianwhocodes.generators import FileGeneratorOption
-from christianwhocodes.io import Text, print, set_quiet_mode
+from christianwhocodes.io import Text, cprint, set_quiet_mode
 
 # ============================================================================
 # ARGUMENT PARSER CONFIGURATION
@@ -48,34 +41,6 @@ def configure_random_parser(subparsers: Any) -> None:
         default=16,
         metavar="N",
         help="Length of the random string (default: 16)",
-    )
-
-
-def configure_generate_parser(subparsers: Any) -> None:
-    """Configure the file generation subcommand.
-
-    Args:
-        subparsers: The subparsers action object to add the generate parser to.
-
-    """
-    file_types = ", ".join(opt.value for opt in FileGeneratorOption)
-    generate_parser = subparsers.add_parser(
-        "generate",
-        help=f"Generate configuration files ({file_types})",
-    )
-    generate_parser.add_argument(
-        "-f",
-        "--file",
-        choices=[opt.value for opt in FileGeneratorOption],
-        required=True,
-        type=FileGeneratorOption,
-        metavar="TYPE",
-        help=f"File type to generate. Options: {file_types}",
-    )
-    generate_parser.add_argument(
-        "--force",
-        action="store_true",
-        help="Force overwrite existing files without confirmation",
     )
 
 
@@ -154,7 +119,6 @@ def create_parser() -> ArgumentParser:
 
     # Configure each subcommand
     configure_random_parser(subparsers)
-    configure_generate_parser(subparsers)
     configure_copy_parser(subparsers)
 
     return parser
@@ -171,7 +135,6 @@ COMMAND_HANDLERS: dict[str, Callable[[Namespace], ExitCode]] = {
     "random": handle_random_string,
     "generaterandom": handle_random_string,
     "randomstring": handle_random_string,
-    "generate": handle_file_generation,
     "copy": handle_copy_operation,
 }
 
@@ -186,7 +149,7 @@ def handle_default(args: Namespace) -> ExitCode:
         ExitCode.SUCCESS after displaying the message.
 
     """
-    print(
+    cprint(
         "...but the people who know their God shall be strong, and carry out great exploits. [purple]—[/] [bold green]Daniel[/] 11:32"
     )
     return ExitCode.SUCCESS
@@ -236,12 +199,12 @@ def main() -> NoReturn:
         exit_code = dispatch_command(args)
     except KeyboardInterrupt:
         # Ctrl+C during any command — exit cleanly instead of traceback.
-        print("\nOperation cancelled by user.", Text.WARNING, force=True)
+        cprint("\nOperation cancelled by user.", Text.WARNING, force=True)
         exit_code = ExitCode.ERROR
     except Exception as e:
         # Last-resort safety net — ensures the CLI never dumps a raw
         # traceback to the user; always exits with a controlled message.
-        print(f"Error: {e}", Text.ERROR, force=True)
+        cprint(f"Error: {e}", Text.ERROR, force=True)
         exit_code = ExitCode.ERROR
 
     exit(exit_code)

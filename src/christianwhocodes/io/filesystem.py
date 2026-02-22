@@ -5,7 +5,7 @@ from pathlib import Path
 from shutil import copy2, copytree, rmtree
 from typing import TypeAlias
 
-from .console import Text, print, status
+from .console import Text, cprint, status
 
 # Type alias for path-like objects
 PathLike: TypeAlias = str | Path
@@ -43,7 +43,7 @@ class Copier(ABC):
 
         """
         if not source.exists():
-            print(f"Source path does not exist: {source}", Text.ERROR, force=True)
+            cprint(f"Source path does not exist: {source}", Text.ERROR, force=True)
             return False
         return True
 
@@ -79,14 +79,14 @@ class FileCopier(Copier):
             return False
 
         if not source.is_file():
-            print(f"Source is not a file: {source}", Text.ERROR, force=True)
+            cprint(f"Source is not a file: {source}", Text.ERROR, force=True)
             return False
 
         try:
             destination.parent.mkdir(parents=True, exist_ok=True)
             with status(f"Copying file {source.name}..."):
                 copy2(source, destination)
-            print(
+            cprint(
                 [
                     ("✓ File copied successfully from ", Text.SUCCESS),
                     (str(source), Text.HIGHLIGHT),
@@ -96,14 +96,14 @@ class FileCopier(Copier):
             )
             return True
         except PermissionError:
-            print(
+            cprint(
                 "Permission denied. Check read/write permissions for source and destination.",
                 Text.ERROR,
                 force=True,
             )
             return False
         except Exception as e:
-            print(f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR, force=True)
+            cprint(f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR, force=True)
             return False
 
 
@@ -140,19 +140,19 @@ class DirectoryCopier(Copier):
             return False
 
         if not source.is_dir():
-            print(f"Source is not a directory: {source}", Text.ERROR, force=True)
+            cprint(f"Source is not a directory: {source}", Text.ERROR, force=True)
             return False
 
         try:
             if destination.exists():
                 if not self._prompt_overwrite(destination):
-                    print("Copy aborted.", Text.WARNING, force=True)
+                    cprint("Copy aborted.", Text.WARNING, force=True)
                     return False
                 rmtree(destination)
 
             with status(f"Copying directory {source.name}..."):
                 copytree(source, destination, dirs_exist_ok=False)
-            print(
+            cprint(
                 [
                     ("✓ Directory copied successfully from ", Text.SUCCESS),
                     (str(source), Text.HIGHLIGHT),
@@ -162,14 +162,14 @@ class DirectoryCopier(Copier):
             )
             return True
         except PermissionError:
-            print(
+            cprint(
                 "Permission denied. Check read/write permissions for source and destination.",
                 Text.ERROR,
                 force=True,
             )
             return False
         except Exception as e:
-            print(
+            cprint(
                 f"Failed to copy directory: {type(e).__name__}: {e}",
                 Text.ERROR,
                 force=True,
@@ -186,7 +186,7 @@ class DirectoryCopier(Copier):
             True if the user enters 'y' or 'Y', False otherwise (defaults to no).
 
         """
-        print(f"\n{destination} already exists.", Text.WARNING, force=True)
+        cprint(f"\n{destination} already exists.", Text.WARNING, force=True)
         response = input("Overwrite? [y/N]: ").strip().lower()
         return response == "y"
 
@@ -227,9 +227,9 @@ def copy_path(source: PathLike, destination: PathLike) -> bool:
     else:
         # Source is neither file nor directory — report the specific reason.
         if not source_path.exists():
-            print(f"Source path does not exist: {source_path}", Text.ERROR, force=True)
+            cprint(f"Source path does not exist: {source_path}", Text.ERROR, force=True)
         else:
-            print(
+            cprint(
                 f"Source is neither a file nor a directory: {source_path}",
                 Text.ERROR,
                 force=True,

@@ -3,6 +3,8 @@
 import string
 from typing import Any, Iterable
 
+__all__: list[str] = ["generate_random_string", "max_length_from_choices"]
+
 
 def generate_random_string(
     length: int = 32,
@@ -56,6 +58,3 @@ def max_length_from_choices(choices: Iterable[tuple[str, Any]]) -> int:
 
     """
     return max((len(choice[0]) for choice in choices), default=0)
-
-
-__all__: list[str] = ["generate_random_string", "max_length_from_choices"]

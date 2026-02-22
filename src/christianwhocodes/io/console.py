@@ -74,7 +74,7 @@ def is_quiet() -> bool:
     return _quiet_mode
 
 
-def print(
+def cprint(
     text: str | list[tuple[str, str | None]],
     color: str | None = None,
     end: str = "\n",
@@ -195,7 +195,7 @@ def progress_bar() -> Generator[Progress, None, None]:
 
 __all__: list[str] = [
     "Text",
-    "print",
+    "cprint",
     "status",
     "progress_bar",
     "set_quiet_mode",

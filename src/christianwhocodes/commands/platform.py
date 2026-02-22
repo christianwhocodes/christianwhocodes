@@ -24,22 +24,22 @@ def handle_platform_info(args: Namespace) -> ExitCode:
 
     """
     from ..core.platform import Platform
-    from ..io.console import Text, print
+    from ..io.console import Text, cprint
 
     platform_info = Platform()
-    print(
+    cprint(
         [
             ("Platform: ", Text.INFO),
             (platform_info.os_name, None),
         ]
     )
-    print(
+    cprint(
         [
             ("Architecture: ", Text.INFO),
             (platform_info.architecture, None),
         ]
     )
-    print(
+    cprint(
         [
             ("Full: ", Text.INFO),
             (str(platform_info), None),

@@ -1,16 +1,15 @@
 """Configuration file generators for common developer tools."""
 
+import os
+import stat
 from dataclasses import dataclass
 from pathlib import Path
 
-from ..core import Platform
 from ..io import Text, cprint, status
+from . import Platform
 
 __all__: list[str] = [
     "FileSpec",
-    "get_pg_service_spec",
-    "get_pgpass_spec",
-    "get_ssh_config_spec",
     "FileGenerator",
 ]
 
@@ -25,10 +24,8 @@ class FileSpec:
 
 
 def _pg_base_path() -> Path:
-    from os import getenv
-
     if Platform().os_name == "windows":
-        appdata = getenv("APPDATA", str(Path.home()))
+        appdata = os.getenv("APPDATA", str(Path.home()))
         return Path(appdata) / "postgresql"
     return Path.home()
 
@@ -48,15 +45,13 @@ def get_pg_service_spec() -> FileSpec:
 
 def get_pgpass_spec() -> FileSpec:
     """Return the ConfigSpec for a PostgreSQL password file."""
-    from stat import S_IRUSR, S_IWUSR
-
     is_win = Platform().os_name == "windows"
     filename = "pgpass.conf" if is_win else ".pgpass"
     content = (
         "# Read more: https://www.postgresql.org/docs/current/libpq-pgpass.html\n\n"
         "# hostname:port:database:username:password\n"
     )
-    mode = None if is_win else (S_IRUSR | S_IWUSR)
+    mode = None if is_win else (stat.S_IRUSR | stat.S_IWUSR)
     return FileSpec(path=_pg_base_path() / filename, content=content, chmod_mode=mode)
 
 
@@ -95,8 +90,9 @@ class FileGenerator:
         if self.spec.chmod_mode is not None:
             try:
                 self.spec.path.chmod(self.spec.chmod_mode)
-                octal_mode = oct(self.spec.chmod_mode)[2:]
-                cprint(f"✓ Permissions secured for {self.spec.path} ({octal_mode})", Text.SUCCESS)
+                cprint(
+                    f"✓ Permissions secured for {self.spec.path}", Text.SUCCESS
+                )  # TODO: Print the actual permissions set (e.g. "600") instead of the mode integer for better clarity.
             except Exception as e:
                 cprint(f"Warning: could not set permissions on {self.spec.path}: {e}", Text.WARNING)
 

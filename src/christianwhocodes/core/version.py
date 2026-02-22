@@ -71,17 +71,17 @@ def print_version(package: str) -> ExitCode:
 
     """
     # Import here to avoid circular dependency
-    from ..io import print
+    from ..io import cprint
 
     version_string, error_msg = Version.get(package)
 
     if version_string != Version.placeholder():
-        print(version_string)
+        cprint(version_string)
         return ExitCode.SUCCESS
     else:
-        print(f"{version_string}: Could not determine version for package '{package}'.")
+        cprint(f"{version_string}: Could not determine version for package '{package}'.")
         if error_msg:
-            print(error_msg)
+            cprint(error_msg)
         return ExitCode.ERROR
 
 
