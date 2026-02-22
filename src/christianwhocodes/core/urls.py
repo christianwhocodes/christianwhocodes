@@ -17,6 +17,14 @@ def normalize_url_path(url: str, leading_slash: bool = False, trailing_slash: bo
         'api/users/'
         >>> normalize_url_path("//api//users//", leading_slash=True, trailing_slash=False)
         '/api/users'
+        >>> normalize_url_path("/")
+        '/'
+
+        Multiple consecutive slashes are collapsed into one before applying
+        the leading/trailing slash rules:
+
+        >>> normalize_url_path("api///users///posts///")
+        'api/users/posts/'
 
     """
     if not url:
