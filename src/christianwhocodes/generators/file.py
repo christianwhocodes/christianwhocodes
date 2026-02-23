@@ -96,7 +96,7 @@ class FileGenerator:
                 cprint(f"Creating new file: {self.spec.path}", Text.INFO)
 
         self.spec.path.parent.mkdir(parents=True, exist_ok=True)
-        self.spec.path.write_text(self.spec.content)
+        self.spec.path.write_text(self.spec.content, encoding="utf-8")
 
         if self.verbose:
             cprint(f"✓ File written to {self.spec.path}", Text.SUCCESS)
