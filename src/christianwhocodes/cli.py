@@ -3,12 +3,12 @@
 from argparse import ArgumentParser, Namespace
 from sys import exit
 
-from christianwhocodes.commands import (
-    handle_copy_operation,
-    handle_platform_display,
-    handle_random_string,
-)
+from christianwhocodes.commands import CopyCommand, PlatformCommand, RandomStringCommand
 from christianwhocodes.core import ExitCode, Text, Version, cprint
+
+_random_cmd = RandomStringCommand()
+_copy_cmd = CopyCommand()
+_platform_cmd = PlatformCommand()
 
 
 def handle_default(args: Namespace) -> ExitCode:
@@ -36,35 +36,22 @@ def main() -> None:
     rand = subparsers.add_parser(
         "random",
         aliases=["rand", "randomstring"],
-        help="Random string generator",
+        help=_random_cmd.help,
     )
-    rand.add_argument(
-        "-l",
-        "--length",
-        type=int,
-        default=16,
-    )
-    rand.add_argument(
-        "--no-clipboard",
-        dest="no_clipboard",
-        action="store_true",
-        default=False,
-        help="Skip copying to clipboard",
-    )
-    rand.set_defaults(func=handle_random_string)  # Link handler directly
+    _random_cmd.add_arguments(rand)
+    rand.set_defaults(func=_random_cmd.handle)
 
     # 3. Copy Command
-    copy = subparsers.add_parser("copy", help="Copy files/dirs")
-    copy.add_argument("-i", "--input", "--source", dest="source", required=True)
-    copy.add_argument("-o", "--output", "--destination", dest="destination", required=True)
-    copy.set_defaults(func=handle_copy_operation)  # Link handler directly
+    copy = subparsers.add_parser("copy", help=_copy_cmd.help)
+    _copy_cmd.add_arguments(copy)
+    copy.set_defaults(func=_copy_cmd.handle)
 
     # --- Execution Logic ---
     args = parser.parse_args()
 
     try:
         if args.platform:
-            exit_code = handle_platform_display(args)
+            exit_code = _platform_cmd.handle(args)
         else:
             exit_code = args.func(args)
     except KeyboardInterrupt:

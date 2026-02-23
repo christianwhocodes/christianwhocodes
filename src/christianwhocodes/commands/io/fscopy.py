@@ -1,30 +1,32 @@
 """File and directory copy command."""
 
-from argparse import Namespace
+from argparse import ArgumentParser, Namespace
 
-from ...core import ExitCode, copy_path
+from ...core import BaseCommand, ExitCode, copy_path
 
-__all__: list[str] = ["handle_copy_operation"]
+__all__: list[str] = ["CopyCommand"]
 
 
-def handle_copy_operation(args: Namespace) -> ExitCode:
+class CopyCommand(BaseCommand):
     """Copy files or directories from source to destination.
 
     Automatically detects whether the source is a file or directory and
     performs the appropriate copy operation with progress feedback.
 
-    Args:
-        args: Parsed arguments containing:
-            - source (str): Source path to copy from
-            - destination (str): Destination path to copy to
+    Example::
 
-    Returns:
-        ExitCode.SUCCESS if copy succeeded, ExitCode.ERROR otherwise.
-
-    Example:
         $ christianwhocodes copy -i ./src -o ./backup/src
         Directory copied successfully from ./src to ./backup/src
 
     """
-    success = copy_path(args.source, args.destination)
-    return ExitCode.SUCCESS if success else ExitCode.ERROR
+
+    prog = "copy"
+    help = "Copy files/dirs"
+
+    def add_arguments(self, parser: ArgumentParser) -> None:  # noqa: D102
+        parser.add_argument("-i", "--input", "--source", dest="source", required=True)
+        parser.add_argument("-o", "--output", "--destination", dest="destination", required=True)
+
+    def handle(self, args: Namespace) -> ExitCode:  # noqa: D102
+        success = copy_path(args.source, args.destination)
+        return ExitCode.SUCCESS if success else ExitCode.ERROR

@@ -2,14 +2,19 @@
 
 from argparse import Namespace
 
-from ...core import ExitCode, Platform, cprint
+from ...core import BaseCommand, ExitCode, Platform
 
-__all__: list[str] = ["handle_platform_display"]
+__all__: list[str] = ["PlatformCommand"]
 
 
-def handle_platform_display(args: Namespace) -> ExitCode:
-    """Handle the 'platform' display."""
-    platform = Platform()
-    cprint(f"OS:           {platform.os_name}")
-    cprint(f"Architecture: {platform.architecture}")
-    return ExitCode.SUCCESS
+class PlatformCommand(BaseCommand):
+    """Display platform OS and architecture information."""
+
+    prog = "platform"
+    help = "Display platform information"
+
+    def handle(self, args: Namespace) -> ExitCode:  # noqa: D102
+        platform = Platform()
+        print(f"OS:           {platform.os_name}")
+        print(f"Architecture: {platform.architecture}")
+        return ExitCode.SUCCESS

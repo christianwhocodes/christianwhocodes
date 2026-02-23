@@ -1,49 +1,57 @@
 """Random string generation command."""
 
-from argparse import Namespace
+from argparse import ArgumentParser, Namespace
 
-from ...core import ExitCode, Text, cprint, generate_random_string, status
+from ...core import BaseCommand, ExitCode, Text, cprint, generate_random_string, status
 
-__all__: list[str] = ["handle_random_string"]
+__all__: list[str] = ["RandomStringCommand"]
 
 
-def handle_random_string(args: Namespace) -> ExitCode:
+class RandomStringCommand(BaseCommand):
     """Generate a cryptographically secure random string.
 
     Creates a random string of the specified length and optionally copies
     it to the clipboard for easy pasting.
 
-    Args:
-        args: Parsed arguments containing:
-            - length (int): Desired string length
-            - no_clipboard (bool): Whether to skip clipboard copy
+    Example::
 
-    Returns:
-        ExitCode.SUCCESS after generating and optionally copying the string.
-
-    Example:
         $ christianwhocodes random -l 16
         Generated: aB3dEf7gHi9jKl2m
         Copied to clipboard!
 
     """
-    with status("Generating secure random string..."):
-        random_str = generate_random_string(length=args.length)
 
-    cprint(
-        [
-            ("✓ Generated: ", Text.SUCCESS),
-            (random_str, Text.HIGHLIGHT),
-        ]
-    )
+    prog = "random"
+    help = "Random string generator"
 
-    if not args.no_clipboard:
-        try:
-            from pyperclip import copy
+    def add_arguments(self, parser: ArgumentParser) -> None:  # noqa: D102
+        parser.add_argument("-l", "--length", type=int, default=16)
+        parser.add_argument(
+            "--no-clipboard",
+            dest="no_clipboard",
+            action="store_true",
+            default=False,
+            help="Skip copying to clipboard",
+        )
 
-            copy(random_str)
-            cprint("✓ Copied to clipboard!", Text.SUCCESS)
-        except Exception as e:
-            cprint(f"Could not copy to clipboard: {e}", Text.WARNING)
+    def handle(self, args: Namespace) -> ExitCode:  # noqa: D102
+        with status("Generating secure random string..."):
+            random_str = generate_random_string(length=args.length)
 
-    return ExitCode.SUCCESS
+        cprint(
+            [
+                ("✓ Generated: ", Text.SUCCESS),
+                (random_str, Text.HIGHLIGHT),
+            ]
+        )
+
+        if not args.no_clipboard:
+            try:
+                from pyperclip import copy
+
+                copy(random_str)
+                cprint("✓ Copied to clipboard!", Text.SUCCESS)
+            except Exception as e:
+                cprint(f"Could not copy to clipboard: {e}", Text.WARNING)
+
+        return ExitCode.SUCCESS
