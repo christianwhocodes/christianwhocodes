@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from ..io.console import Text, cprint, status
+from ..io.console import Text, cprint
 from ..utils.enums import PostgresFilename
 from ..utils.platform import Platform
 
@@ -96,11 +96,9 @@ class FileGenerator:
                 cprint(f"Creating new file: {self.spec.path}", Text.INFO)
 
         self.spec.path.parent.mkdir(parents=True, exist_ok=True)
+        self.spec.path.write_text(self.spec.content)
 
         if self.verbose:
-            with status(f"Creating {self.spec.path.name}..."):
-                self.spec.path.write_text(self.spec.content)
-
             cprint(f"✓ File written to {self.spec.path}", Text.SUCCESS)
 
         if self.spec.chmod_mode is not None:
