@@ -1,5 +1,6 @@
-"""CLI command handlers (generators, I/O)."""
+"""CLI command handlers."""
 
-from .generators import *
-from .io import *
-from .utils import *
+from .base import *
+from .copy import *
+from .platform import *
+from .random import *

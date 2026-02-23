@@ -1,8 +1,10 @@
-"""Display Platform Information."""
+"""Display platform information command."""
 
 from argparse import Namespace
 
-from ...core import BaseCommand, ExitCode, Platform
+from ..utils.enums import ExitCode
+from ..utils.platform import Platform
+from .base import BaseCommand
 
 __all__: list[str] = ["PlatformCommand"]
 

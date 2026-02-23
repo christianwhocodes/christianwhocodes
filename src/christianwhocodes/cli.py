@@ -4,7 +4,9 @@ from argparse import ArgumentParser, Namespace
 from sys import exit
 
 from christianwhocodes.commands import CopyCommand, PlatformCommand, RandomStringCommand
-from christianwhocodes.core import ExitCode, Text, Version, cprint
+from christianwhocodes.io.console import Text, cprint
+from christianwhocodes.utils.enums import ExitCode
+from christianwhocodes.utils.version import Version
 
 _random_cmd = RandomStringCommand()
 _copy_cmd = CopyCommand()

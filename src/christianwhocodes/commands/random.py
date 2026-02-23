@@ -2,7 +2,10 @@
 
 from argparse import ArgumentParser, Namespace
 
-from ...core import BaseCommand, ExitCode, Text, cprint, generate_random_string, status
+from ..generators.random import generate_random_string
+from ..io.console import Text, cprint, status
+from ..utils.enums import ExitCode
+from .base import BaseCommand
 
 __all__: list[str] = ["RandomStringCommand"]
 
