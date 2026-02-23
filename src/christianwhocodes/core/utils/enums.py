@@ -2,7 +2,9 @@
 
 from enum import IntEnum, StrEnum
 
-__all__: list[str] = ["ExitCode", "InitAction"]
+from .platform import Platform
+
+__all__: list[str] = ["ExitCode", "InitAction", "PostgresFilename"]
 
 
 class ExitCode(IntEnum):
@@ -39,3 +41,17 @@ class InitAction(StrEnum):
     SETUP = "setup"
     BOOTSTRAP = "bootstrap"
     SCAFFOLD = "scaffold"
+
+
+class PostgresFilename(StrEnum):
+    """Standard PostgreSQL-related filenames.
+
+    Attributes:
+        PGPASS: The password file name; uses `pgpass.conf` on Windows and
+            `.pgpass` on other platforms.
+        PGSERVICE: The service configuration file name, `.pg_service.conf`.
+
+    """
+
+    PGPASS = "pgpass.conf" if Platform().os_name == "windows" else ".pgpass"
+    PGSERVICE = ".pg_service.conf"

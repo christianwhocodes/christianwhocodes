@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..io import Text, cprint, status
-from ..utils import Platform
+from ..utils import Platform, PostgresFilename
 
 __all__: list[str] = [
     "FileSpec",
@@ -43,7 +43,7 @@ def get_pg_service_spec() -> FileSpec:
         "dbname=postgres\n"
         "user=postgres\n"
     )
-    return FileSpec(path=_pg_base_path() / ".pg_service.conf", content=content)
+    return FileSpec(path=_pg_base_path() / PostgresFilename.PGSERVICE.value, content=content)
 
 
 def get_pgpass_spec() -> FileSpec:
@@ -51,7 +51,7 @@ def get_pgpass_spec() -> FileSpec:
     from stat import S_IRUSR, S_IWUSR
 
     is_win = Platform().os_name == "windows"
-    filename = "pgpass.conf" if is_win else ".pgpass"
+    filename = PostgresFilename.PGPASS.value
     content = (
         "# Read more: https://www.postgresql.org/docs/current/libpq-pgpass.html\n\n"
         "# hostname:port:database:username:password\n"
