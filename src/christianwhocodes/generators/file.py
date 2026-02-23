@@ -77,35 +77,50 @@ def get_ssh_config_spec() -> FileSpec:
 class FileGenerator:
     """Write a :class:`FileSpec` to disk, applying permissions if specified."""
 
-    def __init__(self, spec: FileSpec):
+    def __init__(self, spec: FileSpec, verbose: bool = False) -> None:
         """Create a generator for the given *spec*."""
         self.spec = spec
+        self.verbose = verbose
 
-    def create(self, overwrite: bool = False) -> bool:
+    def create(self, overwrite: bool = False) -> None:
         """Write the file to disk, applying permissions if specified."""
-        if not self._should_overwrite(overwrite):
-            return False
+        if not self._file_needs_content():
+            if not self._confirm_overwrite(overwrite):
+                if self.verbose:
+                    cprint(f"Skipped {self.spec.path} (exists and overwrite declined).", Text.INFO)
+                return
+            if self.verbose:
+                cprint(f"Overwriting existing file: {self.spec.path}", Text.WARNING)
+        else:
+            if self.verbose:
+                cprint(f"Creating new file: {self.spec.path}", Text.INFO)
 
         self.spec.path.parent.mkdir(parents=True, exist_ok=True)
 
-        with status(f"Creating {self.spec.path.name}..."):
-            self.spec.path.write_text(self.spec.content)
+        if self.verbose:
+            with status(f"Creating {self.spec.path.name}..."):
+                self.spec.path.write_text(self.spec.content)
 
-        cprint(f"✓ File written to {self.spec.path}", Text.SUCCESS)
+            cprint(f"✓ File written to {self.spec.path}", Text.SUCCESS)
 
         if self.spec.chmod_mode is not None:
             try:
                 self.spec.path.chmod(self.spec.chmod_mode)
                 octal_mode = oct(self.spec.chmod_mode)[2:]
-                cprint(f"✓ Permissions secured for {self.spec.path} ({octal_mode})", Text.SUCCESS)
+                if self.verbose:
+                    cprint(
+                        f"✓ Permissions secured for {self.spec.path} ({octal_mode})", Text.SUCCESS
+                    )
             except Exception as e:
-                cprint(f"Warning: could not set permissions on {self.spec.path}: {e}", Text.WARNING)
+                cprint(f"Error: could not set permissions on {self.spec.path}: {e}", Text.ERROR)
 
-        return True
+    def _file_needs_content(self) -> bool:
+        """Return True if the file does not exist or is empty."""
+        return not self.spec.path.exists() or self.spec.path.stat().st_size == 0
 
-    def _should_overwrite(self, overwrite: bool) -> bool:
-        """Determine whether to proceed, prompting the user if the file already exists."""
-        if not self.spec.path.exists() or self.spec.path.stat().st_size == 0 or overwrite:
+    def _confirm_overwrite(self, overwrite: bool) -> bool:
+        """Return True if it is safe to overwrite an existing non-empty file."""
+        if overwrite:
             return True
 
         for _ in range(3):

@@ -13,7 +13,7 @@ cwc = "christianwhocodes.cli:main"
 
 [project]
 name = "christianwhocodes"
-version = "1.5.0"
+version = "1.5.0.post1"
 description = "Utilities for developers."
 readme = "README.md"
 license = { file = "LICENSE" }
