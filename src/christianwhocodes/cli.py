@@ -24,12 +24,8 @@ def main() -> None:
     parser = ArgumentParser(prog="christianwhocodes", description="Dev Utilities")
 
     # 1. Global Metadata
-    parser.add_argument(
-        "-v", "--version", action="version", version=Version.get("christianwhocodes")[0]
-    )
-    parser.add_argument(
-        "-p", "--platform", action="store_true", default=False, help="Display platform information"
-    )
+    parser.add_argument("-v", "--version", action="version", version=Version.get("christianwhocodes")[0])
+    parser.add_argument("-p", "--platform", action="store_true", default=False, help="Display platform information")
     parser.set_defaults(func=handle_default)  # Default if no subcommand
 
     subparsers = parser.add_subparsers(dest="command")

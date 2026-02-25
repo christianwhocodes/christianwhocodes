@@ -1,5 +1,5 @@
 [build-system]
-requires = ["uv_build>=0.10.4,<0.11.0"]
+requires = ["uv_build>=0.10.5,<0.11.0"]
 build-backend = "uv_build"
 
 [project.urls]
@@ -13,7 +13,7 @@ cwc = "christianwhocodes.cli:main"
 
 [project]
 name = "christianwhocodes"
-version = "1.5.0.post3"
+version = "1.5.1.dev1"
 description = "Utilities for developers."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -35,7 +35,7 @@ dependencies = ["pyperclip>=1.11.0", "rich>=14.3.3"]
 dev = ["ruff>=0.15.2", "ty>=0.0.18"]
 
 [tool.ruff]
-line-length = 101
+line-length = 130
 
 [tool.ruff.lint]
 select = ["D"]

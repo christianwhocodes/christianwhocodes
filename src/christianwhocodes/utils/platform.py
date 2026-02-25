@@ -37,10 +37,7 @@ class Platform:
         system_platform = system().lower()
         platform_name = self._PLATFORM_MAP.get(system_platform)
         if not platform_name:
-            raise OSError(
-                f"Unsupported operating system: {system_platform}. "
-                f"Supported: {', '.join(self._PLATFORM_MAP.values())}"
-            )
+            raise OSError(f"Unsupported operating system: {system_platform}. Supported: {', '.join(self._PLATFORM_MAP.values())}")
         return platform_name
 
     def _detect_architecture(self) -> str:
@@ -48,8 +45,7 @@ class Platform:
         architecture = self._ARCH_MAP.get(machine_platform)
         if not architecture:
             raise ValueError(
-                f"Unsupported architecture: {machine_platform}. "
-                f"Supported: {', '.join(set(self._ARCH_MAP.values()))}"
+                f"Unsupported architecture: {machine_platform}. Supported: {', '.join(set(self._ARCH_MAP.values()))}"
             )
         return architecture
 

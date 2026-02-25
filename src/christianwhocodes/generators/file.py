@@ -55,8 +55,7 @@ def get_pgpass_spec() -> FileSpec:
     is_win = Platform().os_name == "windows"
     filename = PostgresFilename.PGPASS.value
     content = (
-        "# Read more: https://www.postgresql.org/docs/current/libpq-pgpass.html\n\n"
-        "# hostname:port:database:username:password\n"
+        "# Read more: https://www.postgresql.org/docs/current/libpq-pgpass.html\n\n# hostname:port:database:username:password\n"
     )
     mode = None if is_win else (S_IRUSR | S_IWUSR)
     return FileSpec(path=_pg_base_path() / filename, content=content, chmod_mode=mode)
@@ -106,9 +105,7 @@ class FileGenerator:
                 self.spec.path.chmod(self.spec.chmod_mode)
                 octal_mode = oct(self.spec.chmod_mode)[2:]
                 if self.verbose:
-                    cprint(
-                        f"✓ Permissions secured for {self.spec.path} ({octal_mode})", Text.SUCCESS
-                    )
+                    cprint(f"✓ Permissions secured for {self.spec.path} ({octal_mode})", Text.SUCCESS)
             except Exception as e:
                 cprint(f"Error: could not set permissions on {self.spec.path}: {e}", Text.ERROR)
 
