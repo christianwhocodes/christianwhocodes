@@ -27,6 +27,7 @@ class BaseCommand:
                 print(f"Hello, {args.name}!")
                 return ExitCode.SUCCESS
 
+
         exit_code = GreetCommand()(["Alice"])  # prints "Hello, Alice!"
 
     """

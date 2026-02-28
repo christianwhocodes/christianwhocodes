@@ -30,23 +30,14 @@ class RandomStringCommand(BaseCommand):
     def add_arguments(self, parser: ArgumentParser) -> None:  # noqa: D102
         parser.add_argument("-l", "--length", type=int, default=16)
         parser.add_argument(
-            "--no-clipboard",
-            dest="no_clipboard",
-            action="store_true",
-            default=False,
-            help="Skip copying to clipboard",
+            "--no-clipboard", dest="no_clipboard", action="store_true", default=False, help="Skip copying to clipboard"
         )
 
     def handle(self, args: Namespace) -> ExitCode:  # noqa: D102
         with status("Generating secure random string..."):
             random_str = generate_random_string(length=args.length)
 
-        cprint(
-            [
-                ("✓ Generated: ", Text.SUCCESS),
-                (random_str, Text.HIGHLIGHT),
-            ]
-        )
+        cprint([("✓ Generated: ", Text.SUCCESS), (random_str, Text.HIGHLIGHT)])
 
         if not args.no_clipboard:
             try:

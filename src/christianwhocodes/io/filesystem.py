@@ -50,10 +50,7 @@ class FileCopier(Copier):
             )
             return True
         except PermissionError:
-            cprint(
-                "Permission denied. Check read/write permissions for source and destination.",
-                Text.ERROR,
-            )
+            cprint("Permission denied. Check read/write permissions for source and destination.", Text.ERROR)
             return False
         except Exception as e:
             cprint(f"Failed to copy file: {type(e).__name__}: {e}", Text.ERROR)
@@ -87,16 +84,10 @@ class DirectoryCopier(Copier):
             )
             return True
         except PermissionError:
-            cprint(
-                "Permission denied. Check read/write permissions for source and destination.",
-                Text.ERROR,
-            )
+            cprint("Permission denied. Check read/write permissions for source and destination.", Text.ERROR)
             return False
         except Exception as e:
-            cprint(
-                f"Failed to copy directory: {type(e).__name__}: {e}",
-                Text.ERROR,
-            )
+            cprint(f"Failed to copy directory: {type(e).__name__}: {e}", Text.ERROR)
             return False
 
     def _prompt_overwrite(self, destination: Path) -> bool:
@@ -125,10 +116,7 @@ def copy_path(source: _PathLike, destination: _PathLike) -> bool:
         if not source_path.exists():
             cprint(f"Source path does not exist: {source_path}", Text.ERROR)
         else:
-            cprint(
-                f"Source is neither a file nor a directory: {source_path}",
-                Text.ERROR,
-            )
+            cprint(f"Source is neither a file nor a directory: {source_path}", Text.ERROR)
         return False
 
     return copier.copy(source_path, dest_path)

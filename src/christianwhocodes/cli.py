@@ -31,11 +31,7 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command")
 
     # 2. Random String Command
-    rand = subparsers.add_parser(
-        "random",
-        aliases=["rand", "randomstring"],
-        help=_random_cmd.help,
-    )
+    rand = subparsers.add_parser("random", aliases=["rand", "randomstring"], help=_random_cmd.help)
     _random_cmd.add_arguments(rand)
     rand.set_defaults(func=_random_cmd.handle)
 

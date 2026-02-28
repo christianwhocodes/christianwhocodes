@@ -30,10 +30,7 @@ class Version:
 
             return VersionResult(version(package), "")
         except Exception as e:
-            return VersionResult(
-                Version.placeholder(),
-                f"Could not determine version\n{e}",
-            )
+            return VersionResult(Version.placeholder(), f"Could not determine version\n{e}")
 
 
 def print_version(package: str) -> ExitCode:

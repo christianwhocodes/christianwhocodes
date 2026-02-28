@@ -13,12 +13,7 @@ class Platform:
     :class:`ValueError` for unsupported architectures.
     """
 
-    _PLATFORM_MAP: Final[dict[str, str]] = {
-        "darwin": "macos",
-        "linux": "linux",
-        "windows": "windows",
-    }
-
+    _PLATFORM_MAP: Final[dict[str, str]] = {"darwin": "macos", "linux": "linux", "windows": "windows"}
     _ARCH_MAP: Final[dict[str, str]] = {
         "x86_64": "x64",
         "amd64": "x64",

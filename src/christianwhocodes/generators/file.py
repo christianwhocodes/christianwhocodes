@@ -7,13 +7,7 @@ from ..io.console import Text, cprint
 from ..utils.enums import PostgresFilename
 from ..utils.platform import Platform
 
-__all__: list[str] = [
-    "FileSpec",
-    "get_pg_service_spec",
-    "get_pgpass_spec",
-    "get_ssh_config_spec",
-    "FileGenerator",
-]
+__all__: list[str] = ["FileSpec", "get_pg_service_spec", "get_pgpass_spec", "get_ssh_config_spec", "FileGenerator"]
 
 
 @dataclass

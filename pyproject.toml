@@ -1,19 +1,10 @@
 [build-system]
-requires = ["uv_build>=0.10.5,<0.11.0"]
+requires = ["uv_build>=0.10.7,<0.11.0"]
 build-backend = "uv_build"
-
-[project.urls]
-homepage = "https://github.com/christianwhocodes/christianwhocodes#readme"
-repository = "https://github.com/christianwhocodes/christianwhocodes"
-issues = "https://github.com/christianwhocodes/christianwhocodes/issues"
-
-[project.scripts]
-christianwhocodes = "christianwhocodes.cli:main"
-cwc = "christianwhocodes.cli:main"
 
 [project]
 name = "christianwhocodes"
-version = "1.5.1.dev1"
+version = "1.5.1.dev2"
 description = "Utilities for developers."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -22,6 +13,7 @@ authors = [
 ]
 requires-python = ">=3.12"
 classifiers = [
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
@@ -29,13 +21,29 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
 ]
-dependencies = ["pyperclip>=1.11.0", "rich>=14.3.3"]
+dependencies = ["pyperclip==1.11.0", "rich==14.3.3"]
 
 [dependency-groups]
-dev = ["ruff>=0.15.2", "ty>=0.0.18"]
+dev = ["ruff>=0.15.4", "ty>=0.0.19"]
+
+[project.urls]
+Homepage = "https://github.com/christianwhocodes/christianwhocodes"
+Documentation = "https://github.com/christianwhocodes/christianwhocodes#readme"
+Repository = "https://github.com/christianwhocodes/christianwhocodes"
+Issues = "https://github.com/christianwhocodes/christianwhocodes/issues"
+"Bug Tracker" = "https://github.com/christianwhocodes/christianwhocodes/issues"
+# Changelog = "https://github.com/christianwhocodes/christianwhocodes/blob/main/CHANGELOG.md"
+
+[project.scripts]
+christianwhocodes = "christianwhocodes.cli:main"
+cwc = "christianwhocodes.cli:main"
 
 [tool.ruff]
 line-length = 130
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+docstring-code-format = true
 
 [tool.ruff.lint]
 select = ["D"]
